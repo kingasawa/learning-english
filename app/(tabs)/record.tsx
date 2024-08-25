@@ -1,0 +1,187 @@
+import React, {useEffect, useState} from 'react';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Button} from '@rneui/themed';
+import {socket} from '../../socket';
+import {Audio, InterruptionModeIOS} from 'expo-av';
+import * as Speech from 'expo-speech';
+import {Badge, Icon} from "@rneui/base";
+import {Recording} from "expo-av/build/Audio/Recording";
+
+
+export default function RecordScreen() {
+  const [isConnected, setIsConnected] = useState(false);
+  const [recording, setRecording] = useState<Recording>();
+  const [conversation, setConversation] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    if (!recording) return;
+
+    recording.setOnRecordingStatusUpdate(async (status) => {
+      console.log('Recording status:', status);
+      if (status.isDoneRecording) {
+        console.log('Recording is done.');
+        if (!status.canRecord) {
+          console.log('Cannot record further.');
+        } else {
+          console.log('Ready to record again.');
+        }
+      }
+    });
+    return () => {
+      recording.setOnRecordingStatusUpdate(null);
+    };
+  }, [recording]);
+
+
+  useEffect(() => {
+    if (socket.connected) {
+      onConnect();
+    }
+
+    function onConnect() {
+      setIsConnected(true);
+      console.log('Connected to server');
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+      console.log('Disconnected from server');
+    };
+
+    function onSpeech(data){
+      setConversation((prevConversation) => [...prevConversation, data]);
+    };
+
+    function onBotChat(data){
+      console.log('Sending text to botSpeak');
+      botSpeak(data);
+      const content = 'bot_chat' + data;
+      setConversation((prevConversation) => [...prevConversation, content]);
+      setLoading(false);
+    };
+
+    function botSpeak (text: string){
+      Speech.speak(text, {
+        language: 'en-US',
+      });
+    };
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('translate', onSpeech);
+    socket.on('bot_chat', onBotChat);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('translate', onSpeech);
+      socket.off('bot_chat', onBotChat);
+      socket.disconnect(); // Disconnect the socket when component unmounts
+    };
+  }, []);
+
+  async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      const { status } = await Audio.requestPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access microphone was denied');
+        return;
+      }
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+      const { recording } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      console.log('Starting recording...');
+      setRecording(recording);
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setLoading(true);
+    if (recording) {
+      await Audio.setAudioModeAsync(
+        {
+          allowsRecordingIOS: false,
+          interruptionModeIOS: InterruptionModeIOS.DoNotMix,
+        }
+      );
+      await recording.stopAndUnloadAsync();
+
+      const uri = recording.getURI();
+      recording.setOnRecordingStatusUpdate(null);
+      setRecording(undefined);
+      console.log('Recording stopped and stored at', uri);
+      await uploadToGCS(uri);
+    }
+  }
+
+  const uploadToGCS = async (uri: string | null) => {
+    if (uri) {
+      try {
+        console.log('Now, uploading to backend by call socket...');
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        socket.emit('uploadFile', {
+          blob,
+        });
+        console.log('Waiting for response from server...');
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.socket_status}>
+        <Badge status={ isConnected ? 'success' : 'error' } />
+        <Text style={{ marginLeft: 5, color: isConnected ? 'green' : 'red' }}>{ isConnected ? 'CONNECTED' : 'DISCONNECTED' }</Text>
+      </View>
+      <View style={styles.chat_box}>
+        { conversation?.length > 0 && conversation.map((text, index) => {
+          return text.includes('bot_chat')
+            ? <Text key={index} style={{ color: 'green' }}> Teacher: { text.replace('bot_chat', '') }</Text>
+            : <Text key={index} style={{ color: 'red' }}> Me: { text }</Text>
+        })}
+      </View>
+      <View style={styles.record}>
+        {
+          recording || loading
+            ? <Button type="clear" loading={loading} onPress={stopRecording}>
+                <Icon reverse name="mic-off" color="red" />
+              </Button>
+            : <Button type="clear" onPress={startRecording}>
+                <Icon reverse name="mic" color="green" />
+              </Button>
+        }
+      </View>
+    </View>
+  );
+}
+const screenHeight = Dimensions.get('window').height;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#f0f1f1',
+    padding: 10,
+  },
+  chat_box: {
+    padding: 15,
+    height: screenHeight - 300,
+    backgroundColor: 'white',
+    borderRadius: 10,
+  },
+  socket_status: {
+    flexDirection: 'row',
+    padding: 10,
+    alignItems: 'center'
+  },
+  record: {}
+});
