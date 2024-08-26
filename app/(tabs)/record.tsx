@@ -7,11 +7,6 @@ import * as Speech from 'expo-speech';
 import { Badge, Chip, Icon } from "@rneui/base";
 import {Recording} from "expo-av/build/Audio/Recording";
 import * as Haptics from 'expo-haptics';
-import { AssemblyAI } from "assemblyai";
-
-const client = new AssemblyAI({
-  apiKey: 'aceaec8a467c4927a5aa0252a6e6604b'
-})
 
 export default function RecordScreen() {
   interface conversationTypes {
@@ -20,28 +15,6 @@ export default function RecordScreen() {
     message: string
   }
 
-  const dummyData = [
-    {
-      id: 1,
-      user: true,
-      message: 'Hello'
-    },
-    {
-      id: 2,
-      user: false,
-      message: 'Hi! how are you'
-    },
-    {
-      id: 3,
-      user: true,
-      message: 'Im fine, and you'
-    },
-    {
-      id: 4,
-      user: false,
-      message: 'me too'
-    }
-  ]
   const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<Recording>();
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
