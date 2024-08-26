@@ -3,19 +3,25 @@ import * as Device from 'expo-device';
 
 export default function DeviceScreen() {
 
-  const DATA = [
-    { id: 1, text: 'Branch', value: Device.brand },
-    { id: 2, text: 'Device Name', value: Device.deviceName },
-    { id: 3, text: 'OS', value: Device.osName },
-    { id: 4, text: 'Model Name', value: Device.modelName },
-    { id: 5, text: 'Model ID', value: Device.modelId },
-    { id: 6, text: 'Version', value: Device.osVersion },
-    { id: 7, text: 'Memory', value: Device.totalMemory },
+  interface ItemTypes {
+    id: number;
+    title: string;
+    value: string;
+  }
+
+  const DATA: ItemTypes[] = [
+    { id: 1, title: 'Branch', value: Device.brand },
+    { id: 2, title: 'Device Name', value: Device.deviceName },
+    { id: 3, title: 'OS', value: Device.osName },
+    { id: 4, title: 'Model Name', value: Device.modelName },
+    { id: 5, title: 'Model ID', value: Device.modelId },
+    { id: 6, title: 'Version', value: Device.osVersion },
+    { id: 7, title: 'Memory', value: Device.totalMemory },
   ];
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: ItemTypes }) => (
     <View key={item.id} style={styles.item}>
-      <Text style={styles.title}>{item.text}</Text>
+      <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.id}>{item.value}</Text>
     </View>
   );
@@ -26,7 +32,7 @@ export default function DeviceScreen() {
         <FlatList
           data={DATA}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
         />
       </View>
     );
@@ -39,9 +45,9 @@ export default function DeviceScreen() {
     item: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: 20,
+      padding: 15,
       borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
+      borderBottomColor: '#ededed',
     },
     title: {
       fontSize: 18,
@@ -51,31 +57,5 @@ export default function DeviceScreen() {
       color: '#888', // Optional: add color to differentiate the id
     },
   });
-
-  // return (
-  //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //     <ThemedText>
-  //       Branch: {Device.brand}
-  //     </ThemedText>
-  //     <ThemedText>
-  //       Device Name: {Device.deviceName}
-  //     </ThemedText>
-  //     <ThemedText>
-  //       OS: {Device.osName}
-  //     </ThemedText>
-  //     <ThemedText>
-  //       Model Name: {Device.modelName}
-  //     </ThemedText>
-  //     <ThemedText>
-  //       Model ID: {Device.modelId}
-  //     </ThemedText>
-  //     <ThemedText>
-  //       Version: {Device.osVersion}
-  //     </ThemedText>
-  //     <ThemedText>
-  //       Memory: {Device.totalMemory}
-  //     </ThemedText>
-  //   </View>
-  // );
   return <ListScreen />;
 }

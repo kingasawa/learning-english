@@ -1,17 +1,50 @@
 import React, {useEffect, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {Button} from '@rneui/themed';
-import {socket} from '../../socket';
+import {socket} from "@/socket";
 import {Audio, InterruptionModeIOS} from 'expo-av';
 import * as Speech from 'expo-speech';
-import {Badge, Icon} from "@rneui/base";
+import { Badge, Chip, Icon } from "@rneui/base";
 import {Recording} from "expo-av/build/Audio/Recording";
+import * as Haptics from 'expo-haptics';
+import { AssemblyAI } from "assemblyai";
 
+const client = new AssemblyAI({
+  apiKey: 'aceaec8a467c4927a5aa0252a6e6604b'
+})
 
 export default function RecordScreen() {
+  interface conversationTypes {
+    id: number,
+    user: boolean,
+    message: string
+  }
+
+  const dummyData = [
+    {
+      id: 1,
+      user: true,
+      message: 'Hello'
+    },
+    {
+      id: 2,
+      user: false,
+      message: 'Hi! how are you'
+    },
+    {
+      id: 3,
+      user: true,
+      message: 'Im fine, and you'
+    },
+    {
+      id: 4,
+      user: false,
+      message: 'me too'
+    }
+  ]
   const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<Recording>();
-  const [conversation, setConversation] = useState<string[]>([]);
+  const [conversation, setConversation] = useState<conversationTypes[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     if (!recording) return;
@@ -46,25 +79,34 @@ export default function RecordScreen() {
     function onDisconnect() {
       setIsConnected(false);
       console.log('Disconnected from server');
-    };
+    }
 
-    function onSpeech(data){
-      setConversation((prevConversation) => [...prevConversation, data]);
-    };
+    function onSpeech(data: string){
+      const newMessage: conversationTypes = {
+        id: conversation.length + 1,
+        user: true,
+        message: data
+      }
+      setConversation((prevConversation) => [...prevConversation, newMessage]);
+    }
 
-    function onBotChat(data){
+    function onBotChat(data: string){
       console.log('Sending text to botSpeak');
+      const newMessage: conversationTypes = {
+        id: conversation.length + 1,
+        user: false,
+        message: data
+      }
+      setConversation((prevConversation) => [...prevConversation, newMessage]);
       botSpeak(data);
-      const content = 'bot_chat' + data;
-      setConversation((prevConversation) => [...prevConversation, content]);
       setLoading(false);
-    };
+    }
 
     function botSpeak (text: string){
       Speech.speak(text, {
         language: 'en-US',
       });
-    };
+    }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
@@ -82,6 +124,7 @@ export default function RecordScreen() {
 
   async function startRecording() {
     try {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       console.log('Requesting permissions..');
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== 'granted') {
@@ -102,6 +145,7 @@ export default function RecordScreen() {
   }
 
   async function stopRecording() {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     console.log('Stopping recording..');
     setLoading(true);
     if (recording) {
@@ -144,21 +188,21 @@ export default function RecordScreen() {
         <Text style={{ marginLeft: 5, color: isConnected ? 'green' : 'red' }}>{ isConnected ? 'CONNECTED' : 'DISCONNECTED' }</Text>
       </View>
       <View style={styles.chat_box}>
-        { conversation?.length > 0 && conversation.map((text, index) => {
-          return text.includes('bot_chat')
-            ? <Text key={index} style={{ color: 'green' }}> Teacher: { text.replace('bot_chat', '') }</Text>
-            : <Text key={index} style={{ color: 'red' }}> Me: { text }</Text>
+        { conversation?.length > 0 && conversation.map((data, index) => {
+          return data.user
+            ? <Chip key={data.id+index} color="green" title={ data.message } containerStyle={{ marginVertical: 1, alignSelf: 'flex-end', maxWidth: '90%' }} />
+            : <Chip key={data.id+index} color="gray" title={ data.message } containerStyle={{ marginVertical: 1, alignSelf: 'flex-start', maxWidth: '90%' }} />
         })}
       </View>
       <View style={styles.record}>
         {
           recording || loading
             ? <Button type="clear" loading={loading} onPress={stopRecording}>
-                <Icon reverse name="mic-off" color="red" />
-              </Button>
+              <Icon reverse name="mic-off" color="red" />
+            </Button>
             : <Button type="clear" onPress={startRecording}>
-                <Icon reverse name="mic" color="green" />
-              </Button>
+              <Icon reverse name="mic" color="green" />
+            </Button>
         }
       </View>
     </View>
@@ -183,5 +227,5 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center'
   },
-  record: {}
+  record: {},
 });
