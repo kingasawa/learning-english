@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
+import { Button } from 'tamagui';
 import * as Speech from 'expo-speech';
 
 export default function App() {
@@ -13,7 +14,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Button title="Press to hear some words" onPress={speak} />
+      <Button>Plain</Button>
     </View>
   );
 }
