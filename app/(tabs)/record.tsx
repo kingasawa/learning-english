@@ -9,10 +9,11 @@ import {
   styled,
   Avatar,
   YStack,
-  Spinner,
+  Spinner, Theme,
 } from "tamagui";
 import {socket} from "@/socket";
 import {Audio, InterruptionModeIOS} from 'expo-av';
+import { StatusBar } from 'expo-status-bar'
 import * as Speech from 'expo-speech';
 import {Recording} from "expo-av/build/Audio/Recording";
 import * as Haptics from 'expo-haptics';
@@ -171,14 +172,15 @@ export default function RecordScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <XStack $sm={{ flexDirection: 'column', marginBottom: 10 }}>
         <YGroup alignSelf="center" bordered>
           <YGroup.Item>
             <CustomListItem
               color={isConnected ? 'lightgreen' : 'red'}
               icon={isConnected ? Wifi : WifiOff}
-              title={isConnected ? 'ĐÃ KẾT NỐI' : 'MẤT KẾT NỐI'}
-              subTitle={isConnected ? 'Bắt đầu trò chuyện cùng AI' : 'Vui lòng chờ máy chủ kết nối lại'} />
+              title={isConnected ? 'CONNECTED' : 'DISCONNECTED'}
+              subTitle={isConnected ? 'Begin to talk with AI' : 'Please waiting for reconnect...'} />
           </YGroup.Item>
         </YGroup>
       </XStack>
@@ -186,8 +188,7 @@ export default function RecordScreen() {
       <View style={styles.chat_box}>
         <ScrollView
           marginTop={10}
-          // minHeight={250}
-          backgroundColor="#e3e3e3"
+          backgroundColor="#efefef"
           padding="$4"
           borderRadius="$4"
         >
@@ -197,12 +198,12 @@ export default function RecordScreen() {
                 key={data.id+index}
                 alignItems="center"
                 justifyContent={data.user ? 'flex-end' : 'flex-start'}
-                marginVertical="$1"
+                marginVertical="$2"
               >
                 {
                   !data.user && (
                     <>
-                      <Avatar circular size="$3" marginRight="$1">
+                      <Avatar circular size="$3" marginRight="$2">
                         <Avatar.Image
                           accessibilityLabel="Cam"
                           src="https://www.buyourobot.com/wp-content/uploads/edd/2021/06/4028_cute_bot_thumb_reflection.jpg"
@@ -240,7 +241,7 @@ export default function RecordScreen() {
         {
           recording || loading || !isConnected
             ? <Button circular theme="red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" disabled={loading} />
-            : <Button circular theme="green_active" onPress={startRecording} icon={Mic} size="$6" />
+            : <Theme name="dark_green"><Button circular color="white" onPress={startRecording} icon={Mic} size="$6" /></Theme>
         }
       </View>
     </View>
@@ -261,6 +262,13 @@ const styles = StyleSheet.create({
   },
   chat_box: {
     flex: 1,
+    shadowColor: '#8b8b8b',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   record: {
     flex: 1,

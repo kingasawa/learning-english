@@ -8,26 +8,26 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: 'green',
+        tabBarActiveTintColor: '#364684FF',
         headerShown: false,
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'About',
           headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='house' color={focused ? 'green' : color} />
+            <TabBarIcon name='info' color={focused ? '#364684FF' : color} />
           ),
         }}
       />
       <Tabs.Screen
         name="record"
         options={{
-          title: 'Learning',
+          title: 'Learn',
           headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='school' color={focused ? 'green' : color} />
+            <TabBarIcon name='school' color={focused ? '#364684FF' : color} />
           ),
         }}
       />
@@ -37,7 +37,7 @@ export default function TabLayout() {
           title: 'Device',
           headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='info' color={focused ? 'green' : color} />
+            <TabBarIcon name='settings' color={focused ? '#364684FF' : color} />
           ),
         }}
       />

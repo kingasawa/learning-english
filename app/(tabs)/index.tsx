@@ -6,7 +6,7 @@ import * as Speech from 'expo-speech';
 export default function App() {
 
   const speak = () => {
-    const thingToSay = 'What are you doing ?';
+    const thingToSay = 'Hi, How do you do ?';
     Speech.speak(thingToSay, {
       language: 'en-US',
     });
@@ -14,7 +14,9 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Button>Plain</Button>
+      <Text style={{ alignSelf: 'center' }}>version @1.0.0</Text>
+      <Text style={{ alignSelf: 'center' }}>@trancatkhanh</Text>
+      <Button style={{ marginTop: 15, alignSelf: 'center' }} onPress={() => speak()}>Test sound</Button>
     </View>
   );
 }
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#f0f1f1',
     padding: 8,
   },
 });
