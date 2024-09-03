@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Dimensions, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {
   ScrollView,
   Button,
@@ -17,7 +17,7 @@ import { StatusBar } from 'expo-status-bar'
 import * as Speech from 'expo-speech';
 import {Recording} from "expo-av/build/Audio/Recording";
 import * as Haptics from 'expo-haptics';
-import { Mic, MicOff, Star, Volume2, Wifi, WifiOff } from "@tamagui/lucide-icons"
+import { Mic, MicOff, Volume2, Wifi, WifiOff } from "@tamagui/lucide-icons"
 import { AIConfigModal } from "@/components/AIConfigModal"
 
 export default function RecordScreen() {
@@ -189,8 +189,8 @@ export default function RecordScreen() {
         <ScrollView
           marginTop={10}
           backgroundColor="#efefef"
-          padding="$4"
           borderRadius="$4"
+          padding="$4"
         >
           { conversation?.length > 0 && conversation.map((data, index) => {
             return (
@@ -198,12 +198,12 @@ export default function RecordScreen() {
                 key={data.id+index}
                 alignItems="center"
                 justifyContent={data.user ? 'flex-end' : 'flex-start'}
-                marginVertical="$2"
+                marginBottom={10}
               >
                 {
                   !data.user && (
                     <>
-                      <Avatar circular size="$3" marginRight="$2">
+                      <Avatar circular size="$3" marginRight="$2" marginLeft="$2">
                         <Avatar.Image
                           accessibilityLabel="Cam"
                           src="https://www.buyourobot.com/wp-content/uploads/edd/2021/06/4028_cute_bot_thumb_reflection.jpg"

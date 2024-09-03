@@ -1,10 +1,7 @@
-import {
-  Button,
-  Input,
-  Sheet,
-} from "tamagui"
+import {Button, Input, Sheet } from "tamagui";
+import { useTheme } from "@tamagui/core";
 import { useState } from "react";
-import { Microscope, Replace } from "@tamagui/lucide-icons";
+import { Replace } from "@tamagui/lucide-icons";
 export function AIConfigModal() {
   return <DialogInstance />
 }
@@ -16,9 +13,18 @@ function DialogInstance() {
   const [modal, setModal] = useState(true)
   const [snapPointsMode, setSnapPointsMode] =
     useState<(typeof spModes)[number]>('percent')
+  const theme = useTheme();
   return (
     <>
-      <Button icon={Replace} onPress={() => setOpen(true)}>Conversation Context</Button>
+      <Button
+        icon={Replace}
+        onPress={() => setOpen(true)}
+        backgroundColor={theme.primary}
+        color="white"
+        pressStyle={{ backgroundColor: theme.secondary }}
+      >
+        Conversation Context
+      </Button>
       <Sheet
         forceRemoveScrollEnabled={open}
         modal={modal}

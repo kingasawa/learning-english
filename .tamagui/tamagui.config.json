@@ -37278,48 +37278,6 @@
         "borderColorFocus": "hsl(0, 0%, 20.5%)",
         "borderColorPress": "hsl(0, 0%, 17.9%)",
         "id": "dark_gray_active_ProgressIndicator"
-      },
-      "myCustomTheme": {
-        "accentBackground": "hsl(24, 70.0%, 99.0%)",
-        "accentColor": "hsl(15, 60.0%, 17.0%)",
-        "background0": "hsla(136, 50.0%, 98.9%, 0)",
-        "background025": "hsla(136, 50.0%, 98.9%, 0.25)",
-        "background05": "hsla(136, 50.0%, 98.9%, 0.5)",
-        "background075": "hsla(136, 50.0%, 98.9%, 0.75)",
-        "color1": "hsl(136, 50.0%, 98.9%)",
-        "color2": "hsl(138, 62.5%, 96.9%)",
-        "color3": "hsl(139, 55.2%, 94.5%)",
-        "color4": "hsl(140, 48.7%, 91.0%)",
-        "color5": "hsl(141, 43.7%, 86.0%)",
-        "color6": "hsl(143, 40.3%, 79.0%)",
-        "color7": "hsl(146, 38.5%, 69.0%)",
-        "color8": "hsl(151, 40.2%, 54.1%)",
-        "color9": "hsl(151, 55.0%, 41.5%)",
-        "color10": "hsl(152, 57.5%, 37.6%)",
-        "color11": "hsl(153, 67.0%, 28.5%)",
-        "color12": "hsl(155, 40.0%, 14.0%)",
-        "color0": "hsla(151, 55.0%, 41.5%, 0)",
-        "color025": "hsla(151, 55.0%, 41.5%, 0.25)",
-        "color05": "hsla(151, 55.0%, 41.5%, 0.5)",
-        "color075": "hsla(151, 55.0%, 41.5%, 0.75)",
-        "background": "#f7f7f7",
-        "backgroundHover": "hsla(136, 50.0%, 98.9%, 0.75)",
-        "backgroundPress": "hsl(138, 62.5%, 96.9%)",
-        "backgroundFocus": "hsl(138, 62.5%, 96.9%)",
-        "borderColor": "hsl(140, 48.7%, 91.0%)",
-        "borderColorHover": "hsl(139, 55.2%, 94.5%)",
-        "borderColorPress": "hsl(141, 43.7%, 86.0%)",
-        "borderColorFocus": "hsl(140, 48.7%, 91.0%)",
-        "color": "#333",
-        "colorHover": "hsl(153, 67.0%, 28.5%)",
-        "colorPress": "hsl(155, 40.0%, 14.0%)",
-        "colorFocus": "hsl(153, 67.0%, 28.5%)",
-        "colorTransparent": "hsla(151, 55.0%, 41.5%, 0)",
-        "placeholderColor": "hsl(151, 55.0%, 41.5%)",
-        "outlineColor": "hsla(151, 55.0%, 41.5%, 0.25)",
-        "primary": "#6200ee",
-        "secondary": "#03dac6",
-        "id": "myCustomTheme"
       }
     },
     "shorthands": {
@@ -38973,6 +38931,34 @@
           "key": "$yellow12Dark",
           "name": "yellow12Dark",
           "val": "hsl(53, 100%, 91.0%)",
+          "variable": ""
+        },
+        "white": {
+          "isVar": true,
+          "key": "$white",
+          "name": "white",
+          "val": "#FFFFFF",
+          "variable": ""
+        },
+        "black": {
+          "isVar": true,
+          "key": "$black",
+          "name": "black",
+          "val": "#000000",
+          "variable": ""
+        },
+        "primary": {
+          "isVar": true,
+          "key": "$primary",
+          "name": "primary",
+          "val": "#364684FF",
+          "variable": ""
+        },
+        "secondary": {
+          "isVar": true,
+          "key": "$secondary",
+          "name": "secondary",
+          "val": "#5163a6",
           "variable": ""
         }
       },
@@ -41400,6 +41386,34 @@
         "key": "$yellow12Dark",
         "name": "yellow12Dark",
         "val": "hsl(53, 100%, 91.0%)",
+        "variable": ""
+      },
+      "$color.white": {
+        "isVar": true,
+        "key": "$white",
+        "name": "white",
+        "val": "#FFFFFF",
+        "variable": ""
+      },
+      "$color.black": {
+        "isVar": true,
+        "key": "$black",
+        "name": "black",
+        "val": "#000000",
+        "variable": ""
+      },
+      "$color.primary": {
+        "isVar": true,
+        "key": "$primary",
+        "name": "primary",
+        "val": "#364684FF",
+        "variable": ""
+      },
+      "$color.secondary": {
+        "isVar": true,
+        "key": "$secondary",
+        "name": "secondary",
+        "val": "#5163a6",
         "variable": ""
       },
       "$radius.0": {

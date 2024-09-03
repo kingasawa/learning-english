@@ -2,13 +2,16 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { useTheme } from "@tamagui/core";
 
 export default function TabLayout() {
 
+  const theme = useTheme();
+  const primaryColor = theme.primary as string;
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#364684FF',
+        tabBarActiveTintColor: primaryColor,
         headerShown: false,
       }}>
       <Tabs.Screen
@@ -16,8 +19,9 @@ export default function TabLayout() {
         options={{
           title: 'About',
           headerShown: true,
+          // tabBarBadge: 2,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='info' color={focused ? '#364684FF' : color} />
+            <TabBarIcon name='info' color={focused ? primaryColor : color} />
           ),
         }}
       />
@@ -27,7 +31,7 @@ export default function TabLayout() {
           title: 'Learn',
           headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='school' color={focused ? '#364684FF' : color} />
+            <TabBarIcon name='school' color={focused ? primaryColor : color} />
           ),
         }}
       />
@@ -37,7 +41,7 @@ export default function TabLayout() {
           title: 'Device',
           headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='settings' color={focused ? '#364684FF' : color} />
+            <TabBarIcon name='settings' color={focused ? primaryColor : color} />
           ),
         }}
       />
