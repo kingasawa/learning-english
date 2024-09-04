@@ -9,7 +9,8 @@ import {
   styled,
   Avatar,
   YStack,
-  Spinner, Theme,
+  Spinner,
+  Theme,
 } from "tamagui";
 import {socket} from "@/socket";
 import {Audio, InterruptionModeIOS} from 'expo-av';
@@ -241,7 +242,7 @@ export default function RecordScreen() {
         {
           recording || loading || !isConnected
             ? <Button circular theme="red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" disabled={loading} />
-            : <Theme name="dark_green"><Button circular color="white" onPress={startRecording} icon={Mic} size="$6" /></Theme>
+            : <Button circular color="white" onPress={startRecording} icon={Mic} size="$6" />
         }
       </View>
     </View>

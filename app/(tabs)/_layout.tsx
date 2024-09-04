@@ -1,13 +1,12 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { useTheme } from "@tamagui/core";
+import { Tabs } from 'expo-router';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
 export default function TabLayout() {
 
   const theme = useTheme();
-  const primaryColor = theme.primary as string;
+  const primaryColor = theme.primary?.val;
   return (
     <Tabs
       screenOptions={{
