@@ -60,7 +60,7 @@ export default function RootLayout() {
     if (isReady) {
       await SplashScreen.hideAsync();
       if (!isLoggedIn) {
-        router.replace('/register');
+        // router.replace('/login');
       }
     }
   }, [isReady, isLoggedIn]);

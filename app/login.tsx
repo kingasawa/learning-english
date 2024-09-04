@@ -7,18 +7,19 @@ import {
   Spinner,
   styled,
   useTheme,
-  Text, H5, H6
+  Text, H5, H6, XStack
 } from "tamagui"
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import {Stack, useRouter} from "expo-router";
+import {Search} from "@tamagui/lucide-icons";
 
 export interface ErrorType {
   email?: string,
   password?: string,
 }
 
-const Login = () => {
+const Register = () => {
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -99,6 +100,7 @@ const Login = () => {
   const SubmitButton = styled(Button, {
     backgroundColor: theme.primary,
     marginTop: 10,
+    padding: 20,
     pressStyle: {
       backgroundColor: theme.secondary
     }
@@ -136,43 +138,56 @@ const Login = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={styles.container}>
-      <H2 marginTop={80} marginBottom={40} alignSelf="center">Member Login</H2>
-      <Form
-        style={styles.form}
-        gap="$2"
-        onSubmit={() => handleSubmit() }
-        borderTopLeftRadius="$10"
-        borderTopRightRadius="$10"
-        backgroundColor="#000000"
-        padding="$6"
-      >
-        <H6 alignSelf="center" marginBottom={10} color={theme.primary}>Please login to continue</H6>
-        <Input
-          backgroundColor="white"
-          borderColor="#e3e3e3"
-          focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
-          color={theme.primary}
-          placeholder="Enter your email address"
-          placeholderTextColor="#bbb"
-          onChangeText={(value) => handleChange("email", value)}
-        />
-        <Input
-          backgroundColor="white"
-          borderColor="#e3e3e3"
-          focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
-          color={theme.primary}
-          placeholder="Enter your password"
-          placeholderTextColor="#bbb"
-          secureTextEntry={true}
-          onChangeText={(value) => handleChange("password", value)}
-        />
-        <Form.Trigger asChild>
-          <SubmitButton icon={loading ? <Spinner /> : null} disabled={loading}>LOGIN</SubmitButton>
-        </Form.Trigger>
-        <ErrorText />
-      </Form>
-    </View>
+      <View style={styles.container}>
+        <H2 alignSelf="center" marginBottom={30}>Member Login</H2>
+        <Form
+          style={styles.form}
+          gap="$3"
+          onSubmit={() => handleSubmit() }
+          borderRadius="$10"
+          padding="$5"
+          paddingVertical="$6"
+        >
+          <H6 alignSelf="center" marginBottom={5} color="$primary">Login to continue</H6>
+          <Input
+            size="$5"
+            borderRadius={30}
+            backgroundColor="white"
+            borderColor="#e3e3e3"
+            focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
+            color={theme.primary}
+            placeholder="Enter your email address"
+            placeholderTextColor="#bbb"
+            textContentType="emailAddress"
+            onChangeText={(value) => handleChange("email", value)}
+          />
+          <Input
+            size="$5"
+            borderRadius={30}
+            backgroundColor="white"
+            borderColor="#e3e3e3"
+            focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
+            color={theme.primary}
+            placeholder="Enter your password"
+            placeholderTextColor="#bbb"
+            secureTextEntry={true}
+            onChangeText={(value) => handleChange("password", value)}
+          />
+          <Form.Trigger asChild>
+            <Button
+              marginTop={30}
+              backgroundColor="$primary"
+              borderRadius={30}
+              size="$5"
+              icon={loading ? <Spinner /> : null}
+              disabled={loading}
+            >
+              SUBMIT
+            </Button>
+          </Form.Trigger>
+          <ErrorText />
+        </Form>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -181,15 +196,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#364684',
+    // backgroundColor: '#fff',
+    padding: 30
   },
   form: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    shadowColor: '#d6d6d6',
+    // flex: 1,
+    backgroundColor: 'white',
+    shadowColor: 'rgba(3,20,40,0.31)',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -204,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Register;

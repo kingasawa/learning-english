@@ -38947,6 +38947,13 @@
           "val": "#000000",
           "variable": ""
         },
+        "red": {
+          "isVar": true,
+          "key": "$red",
+          "name": "red",
+          "val": "#af0404",
+          "variable": ""
+        },
         "primary": {
           "isVar": true,
           "key": "$primary",
@@ -41407,6 +41414,13 @@
         "key": "$black",
         "name": "black",
         "val": "#000000",
+        "variable": ""
+      },
+      "$color.red": {
+        "isVar": true,
+        "key": "$red",
+        "name": "red",
+        "val": "#af0404",
         "variable": ""
       },
       "$color.primary": {

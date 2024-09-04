@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View } from "react-native";
+import React, {useEffect, useRef, useState} from 'react';
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import {
-  ScrollView,
+  // ScrollView,
   Button,
   XStack,
   YGroup,
@@ -27,6 +27,7 @@ export default function RecordScreen() {
     user: boolean,
     message: string
   }
+  const scrollViewRef = useRef<ScrollView>();
   const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<Recording>();
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
@@ -189,9 +190,10 @@ export default function RecordScreen() {
       <View style={styles.chat_box}>
         <ScrollView
           marginTop={10}
-          backgroundColor="#efefef"
-          borderRadius="$4"
-          padding="$4"
+          backgroundColor="#f9f9f9"
+          borderRadius="15"
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
+          ref={scrollViewRef}
         >
           { conversation?.length > 0 && conversation.map((data, index) => {
             return (
@@ -217,7 +219,7 @@ export default function RecordScreen() {
                   marginRight="$2"
                   padding="$3"
                   borderRadius="$4"
-                  backgroundColor={data.user ? 'green' : 'white'}
+                  backgroundColor={data.user ? 'green' : '#eee'}
                   maxWidth="80%"
                 >
                   <Text >
@@ -240,9 +242,9 @@ export default function RecordScreen() {
       </View>
       <View style={styles.record}>
         {
-          recording || loading || !isConnected
-            ? <Button circular theme="red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" disabled={loading} />
-            : <Button circular color="white" onPress={startRecording} icon={Mic} size="$6" />
+          recording || loading
+            ? <Button circular backgroundColor="$red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" disabled={loading} />
+            : <Button circular backgroundColor="$primary" color="white" onPress={startRecording} icon={Mic} size="$6" disabled={!isConnected} />
         }
       </View>
     </View>
@@ -253,8 +255,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'space-between',
-    backgroundColor: '#f0f1f1',
+    backgroundColor: '#fff',
     padding: 10,
+    paddingTop:50
   },
   socket_status: {
     flexDirection: 'row',
@@ -263,7 +266,7 @@ const styles = StyleSheet.create({
   },
   chat_box: {
     flex: 1,
-    shadowColor: '#8b8b8b',
+    shadowColor: '#464646',
     shadowOffset: {
       width: 0,
       height: 1,

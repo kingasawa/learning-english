@@ -7,6 +7,7 @@ const customTokens = createTokens({
     ...config.tokens.color,
     white: '#FFFFFF',
     black: '#000000',
+    red: '#af0404',
     primary: '#364684',
     secondary: '#5163a6',
     input: '#364684'

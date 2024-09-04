@@ -28,7 +28,7 @@ export default function TabLayout() {
         name="record"
         options={{
           title: 'Learn',
-          headerShown: true,
+          // headerShown: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='school' color={focused ? primaryColor : color} />
           ),
