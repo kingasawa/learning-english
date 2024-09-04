@@ -147,10 +147,11 @@ const Login = () => {
         backgroundColor="#000000"
         padding="$6"
       >
-        <H6 alignSelf="center" marginBottom={10} color={theme.primary}>Please login to continue.</H6>
+        <H6 alignSelf="center" marginBottom={10} color={theme.primary}>Please login to continue</H6>
         <Input
           backgroundColor="white"
           borderColor="#e3e3e3"
+          focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
           color={theme.primary}
           placeholder="Enter your email address"
           placeholderTextColor="#bbb"
@@ -159,6 +160,7 @@ const Login = () => {
         <Input
           backgroundColor="white"
           borderColor="#e3e3e3"
+          focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
           color={theme.primary}
           placeholder="Enter your password"
           placeholderTextColor="#bbb"
