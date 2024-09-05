@@ -25,7 +25,7 @@ export default function RecordScreen() {
     user: boolean,
     message: string
   }
-  const scrollViewRef = useRef<ScrollView>();
+  const scrollViewRef = useRef<ScrollView>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<Recording>();
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
@@ -191,9 +191,7 @@ export default function RecordScreen() {
       <AIConfigModal />
       <View style={styles.chat_box}>
         <ScrollView
-          marginTop={10}
-          paddingTop={10}
-          borderRadius="15"
+          style={styles.scrollView}
           onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
           ref={scrollViewRef}
         >
@@ -288,4 +286,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'flex-end'
   },
+  scrollView: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderRadius: 15,
+  }
 });
