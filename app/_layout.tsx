@@ -43,6 +43,7 @@ export default function RootLayout() {
   useEffect(() => {
     async function checkLoginStatus() {
       const token = await AsyncStorage.getItem('userToken');
+      console.log('token', token);
       if (token) {
         setIsLoggedIn(true);
       } else {
@@ -61,10 +62,11 @@ export default function RootLayout() {
   }, [loaded]);
 
   const onLayoutRootView = useCallback(async () => {
+    console.log('isLoggedIn', isLoggedIn);
     if (isReady) {
       await SplashScreen.hideAsync();
       if (!isLoggedIn) {
-        // router.replace('/login');
+        router.replace('/login');
       }
     }
   }, [isReady, isLoggedIn]);

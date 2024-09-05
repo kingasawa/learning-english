@@ -68,19 +68,29 @@ const Login = () => {
     setLoading(true);
     if (handleValidation()) {
       try {
-        // const response: any = await axios.post('https://simplecode.online/users', formData);
-        console.log('formData', formData);
-        const response: any = await axios.post('http://localhost:3001/users', formData);
-        console.log('Login successful:', response.data);
-        await AsyncStorage.setItem('userToken', response.data.user?.token);
-        setErrors({});
-        router.replace('/')
+        await login();
       } catch (error) {
         setErrors({ error: 'Login failed' });
         console.error('Login failed:', error);
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const login = async() => {
+    // const response: any = await axios.post('https://simplecode.online/users', formData);
+    const response: any = await axios.post('http://192.168.1.47:3001/api/user/login', formData);
+    console.log('Login response:', response.data);
+    console.log('response.data?.error', response.data?.error);
+    if (response.data?.error) {
+      setErrors({
+        error: response.data.message
+      });
+    } else {
+      await AsyncStorage.setItem('userToken', response.data.user?.token);
+      setErrors({});
+      router.replace('/')
     }
   };
 

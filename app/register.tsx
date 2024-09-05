@@ -31,7 +31,6 @@ const Register = () => {
   });
 
   const handleChange = (field: any, value: any) => {
-    console.log('value', value);
     setFormData({
       ...formData,
       [field]: value,
@@ -66,19 +65,28 @@ const Register = () => {
     setLoading(true);
     if (handleValidation()) {
       try {
-        // const response: any = await axios.post('https://simplecode.online/users', formData);
-        console.log('formData', formData);
-        const response: any = await axios.post('http://localhost:3001/users', formData);
-        console.log('Login successful:', response.data);
-        await AsyncStorage.setItem('userToken', response.data.user?.token);
-        setErrors({});
-        router.replace('/')
+        await register()
       } catch (error) {
-        setErrors({ error: 'Login failed' });
-        console.error('Login failed:', error);
+        setErrors({ error: 'Register failed' });
+        console.error('Register failed:', error);
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const register = async() => {
+    const response: any = await axios.post('http://192.168.1.47:3001/api/user/register', formData);
+    console.log('Register response:', response.data);
+    console.log('response.data?.error', response.data?.error);
+    if (response.data?.error) {
+      setErrors({
+        error: response.data.message
+      });
+    } else {
+      await AsyncStorage.setItem('userToken', response.data.user?.token);
+      setErrors({});
+      router.replace('/')
     }
   };
 
@@ -87,7 +95,6 @@ const Register = () => {
   };
 
   const ErrorText = () => {
-    console.log('errors', Object.values(errors));
     return (
       <Text style={{
         color: '#d62121',

@@ -50,5 +50,4 @@ export const tamaguiConfig = createTamagui({
   },
 });
 
-
 export default tamaguiConfig
