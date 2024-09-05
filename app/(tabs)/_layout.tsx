@@ -12,7 +12,12 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: primaryColor,
         headerShown: false,
-      }}>
+        tabBarStyle: {
+          position: 'absolute',
+          opacity: 0.9
+        }
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

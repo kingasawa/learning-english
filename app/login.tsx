@@ -1,45 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, ImageBackground, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { useState } from 'react';
+import { View, StyleSheet, ImageBackground, TouchableWithoutFeedback, Keyboard } from "react-native";
 import {
   Button,
-  Form, H2,
-  Input, Separator,
+  Form,
+  H2,
+  Input,
   Spinner,
-  styled,
   useTheme,
-  Text, H5, H6, XStack
+  Text,
+  H6,
+  XStack,
+  YStack
 } from "tamagui"
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Stack, useRouter} from "expo-router";
-import {Search} from "@tamagui/lucide-icons";
+import { Link, useRouter } from "expo-router";
+import { Facebook, AtSign } from "@tamagui/lucide-icons";
 
-export interface ErrorType {
+interface ErrorType {
   email?: string,
   password?: string,
 }
 
-const Register = () => {
+const Login = () => {
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [token, setToken] = useState<string>('');
-  const [showToast, setShowToast] = useState<boolean>(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const handleFocus = (field: any) => {
-    setErrors({
-      ...errors,
-      [field]: "",
-    });
-  };
-
-
-  const handleChange = (field: any, value: any) => {
+ const handleChange = (field: any, value: any) => {
     console.log('value', value);
     setFormData({
       ...formData,
@@ -59,8 +52,6 @@ const Register = () => {
     } else if (!validateEmail(formData.email)) {
       newErrors.email = "Invalid email format";
     }
-
-    // Add more validation rules as needed
 
     setLoading(false);
     if (Object.keys(newErrors).length > 0) {
@@ -88,7 +79,7 @@ const Register = () => {
         setErrors({ error: 'Login failed' });
         console.error('Login failed:', error);
       } finally {
-        setLoading(false); // Kết thúc trạng thái loading sau khi hoàn thành yêu cầu
+        setLoading(false);
       }
     }
   };
@@ -97,30 +88,37 @@ const Register = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const SubmitButton = styled(Button, {
-    backgroundColor: theme.primary,
-    marginTop: 10,
-    padding: 20,
-    pressStyle: {
-      backgroundColor: theme.secondary
-    }
-  })
+  const FacebookButton = () => {
+    return (
+      <Button
+        style={styles.shadow}
+        marginTop={30}
+        backgroundColor="#4267B2"
+        borderRadius={30}
+        size="$5"
+        icon={<Facebook />}
+        disabled={loading}
+      >
+        Login with Facebook
+      </Button>
+    )
+  }
 
-  const FacebookButton = styled(Button, {
-    backgroundColor: theme.primary,
-    marginTop: 10,
-    pressStyle: {
-      backgroundColor: theme.secondary
-    }
-  })
-
-  const GoogleButton = styled(Button, {
-    backgroundColor: theme.primary,
-    marginTop: 10,
-    pressStyle: {
-      backgroundColor: theme.secondary
-    }
-  })
+  const GoogleButton = () => {
+    return (
+      <Button
+        style={styles.shadow}
+        marginTop={30}
+        backgroundColor="#df4930"
+        borderRadius={30}
+        size="$5"
+        icon={<AtSign />}
+        disabled={loading}
+      >
+        Login with Google
+      </Button>
+    )
+  }
 
   const ErrorText = () => {
     console.log('errors', Object.values(errors));
@@ -137,58 +135,76 @@ const Register = () => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
-        <H2 alignSelf="center" marginBottom={30}>Member Login</H2>
-        <Form
-          style={styles.form}
-          gap="$3"
-          onSubmit={() => handleSubmit() }
-          borderRadius="$10"
-          padding="$5"
-          paddingVertical="$6"
-        >
-          <H6 alignSelf="center" marginBottom={5} color="$primary">Login to continue</H6>
-          <Input
-            size="$5"
-            borderRadius={30}
-            backgroundColor="white"
-            borderColor="#e3e3e3"
-            focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
-            color={theme.primary}
-            placeholder="Enter your email address"
-            placeholderTextColor="#bbb"
-            textContentType="emailAddress"
-            onChangeText={(value) => handleChange("email", value)}
-          />
-          <Input
-            size="$5"
-            borderRadius={30}
-            backgroundColor="white"
-            borderColor="#e3e3e3"
-            focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
-            color={theme.primary}
-            placeholder="Enter your password"
-            placeholderTextColor="#bbb"
-            secureTextEntry={true}
-            onChangeText={(value) => handleChange("password", value)}
-          />
-          <Form.Trigger asChild>
-            <Button
-              marginTop={30}
-              backgroundColor="$primary"
-              borderRadius={30}
-              size="$5"
-              icon={loading ? <Spinner /> : null}
-              disabled={loading}
+      <ImageBackground
+        source={require('@/assets/images/bg.png')}
+        style={styles.image}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.container}>
+            <Form
+              style={styles.form}
+              gap="$4"
+              onSubmit={() => handleSubmit() }
             >
-              SUBMIT
-            </Button>
-          </Form.Trigger>
-          <ErrorText />
-        </Form>
-      </View>
-    </TouchableWithoutFeedback>
+              <H2 style={styles.shadow} color="$primary" alignSelf="center" marginBottom={30}>Member Login</H2>
+              <H6 alignSelf="center" marginBottom={5} color="$primary">Login to continue</H6>
+              <Input
+                style={styles.shadow}
+                size="$5"
+                borderRadius={30}
+                backgroundColor="white"
+                borderColor="#e3e3e3"
+                focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
+                color={theme.primary}
+                placeholder="Enter your email address"
+                placeholderTextColor="#bbb"
+                textContentType="emailAddress"
+                onChangeText={(value) => handleChange("email", value)}
+              />
+              <Input
+                style={styles.shadow}
+                size="$5"
+                borderRadius={30}
+                backgroundColor="white"
+                borderColor="#e3e3e3"
+                focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
+                color={theme.primary}
+                placeholder="Enter your password"
+                placeholderTextColor="#bbb"
+                secureTextEntry={true}
+                onChangeText={(value) => handleChange("password", value)}
+              />
+              <Form.Trigger asChild>
+                <Button
+                  style={styles.shadow}
+                  marginTop={30}
+                  backgroundColor="$primary"
+                  borderRadius={30}
+                  size="$5"
+                  icon={loading ? <Spinner /> : null}
+                  disabled={loading}
+                >
+                  Login
+                </Button>
+              </Form.Trigger>
+              <ErrorText />
+            </Form>
+            <XStack style={styles.formFooter}>
+              <YStack gap="$6" justifyContent="center">
+                <YStack gap="$3" alignItems="center">
+                  <Text color="$secondary"><Link href={"/register"}>Forgot your password?</Link></Text>
+                  <Text color="$secondary"><Link href={"/register"}>Don't have an account?</Link></Text>
+                </YStack>
+                <YStack>
+                  <Text color="$secondary" alignSelf="center">Or</Text>
+                  <FacebookButton />
+                  <GoogleButton />
+                </YStack>
+              </YStack>
+            </XStack>
+          </View>
+        </TouchableWithoutFeedback>
+      </ImageBackground>
   );
 };
 
@@ -196,28 +212,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // backgroundColor: '#fff',
-    padding: 30
+    flexDirection: 'column',
+  },
+  image: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
   form: {
-    // flex: 1,
-    backgroundColor: 'white',
-    shadowColor: 'rgba(3,20,40,0.31)',
+    flex: 1,
+    paddingTop: 100,
+    alignSelf: 'center',
+    backgroundColor: 'none',
+  },
+  formFooter: {
+    flex: 1,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    paddingBottom: 60,
+  },
+  shadow: {
+    shadowColor: 'rgb(135,184,199)',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
-  },
-  input: {
-    width: '100%',
-    marginBottom: 12,
+    shadowRadius: 1,
   },
 });
 
-export default Register;
+export default Login;

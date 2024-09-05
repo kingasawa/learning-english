@@ -8,9 +8,9 @@ const customTokens = createTokens({
     white: '#FFFFFF',
     black: '#000000',
     red: '#af0404',
-    primary: '#364684',
-    secondary: '#5163a6',
-    input: '#364684'
+    primary: '#3e94a9',
+    secondary: '#67acbd',
+    input: '#3e94a9'
   },
   // space: {
   //   ...config.tokens.space,

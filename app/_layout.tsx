@@ -4,7 +4,12 @@ import { ThemeProvider } from '@react-navigation/native';
 import { TamaguiProvider } from 'tamagui';
 import { tamaguiConfig } from "@/tamagui.config";
 import type { Theme } from "@react-navigation/native/src/types";
-import { useColorScheme, Keyboard, TouchableWithoutFeedback, View, StyleSheet, Image } from 'react-native';
+import {
+  useColorScheme,
+  View,
+  StyleSheet,
+  ImageBackground
+} from "react-native";
 import { useFonts } from 'expo-font';
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,10 +22,10 @@ export default function RootLayout() {
   const DefaultTheme: Theme = {
     dark: false,
     colors: {
-      primary: '#364684',
-      background: '#364684',
+      primary: '#3e94a9',
+      background: '#d4f2e8c7',
       card: 'rgb(255, 255, 255)',
-      text: '#364684',
+      text: '#3e94a9',
       border: 'rgb(216, 216, 216)',
       notification: 'rgb(255, 59, 48)',
     },
@@ -47,10 +52,9 @@ export default function RootLayout() {
 
     async function prepare() {
       await checkLoginStatus();
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       if (loaded) {
         setIsReady(true);
-        await SplashScreen.hideAsync();
       }
     }
     prepare().then();
@@ -67,11 +71,10 @@ export default function RootLayout() {
 
   if (!isReady) {
     return (
-      <View style={styles.splashContainer}>
-        <Image
-          source={require('@/assets/images/bottalk.gif')}
-          style={styles.splashImage}
-          resizeMode="contain"
+      <View style={styles.container}>
+        <ImageBackground
+          source={require('@/assets/images/splash.png')}
+          style={styles.image}
         />
       </View>
     );
@@ -94,13 +97,16 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
-  splashContainer: {
+  container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'column',
   },
-  splashImage: {
+  image: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
 });

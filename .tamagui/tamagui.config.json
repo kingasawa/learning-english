@@ -27004,7 +27004,7 @@
         "color025": "rgba(10,10,10,0.25)",
         "color05": "rgba(10,10,10,0.5)",
         "color075": "rgba(10,10,10,0.75)",
-        "background": "#364684",
+        "background": "#3e94a9",
         "backgroundHover": "rgba(255,255,255,0.75)",
         "backgroundPress": "#f8f8f8",
         "backgroundFocus": "#f8f8f8",
@@ -27144,7 +27144,7 @@
         "color025": "rgba(255,255,255,0.25)",
         "color05": "rgba(255,255,255,0.5)",
         "color075": "rgba(255,255,255,0.75)",
-        "background": "#364684",
+        "background": "#3e94a9",
         "backgroundHover": "#151515",
         "backgroundPress": "rgba(10,10,10,0.75)",
         "backgroundFocus": "rgba(10,10,10,0.75)",
@@ -38958,21 +38958,21 @@
           "isVar": true,
           "key": "$primary",
           "name": "primary",
-          "val": "#364684",
+          "val": "#3e94a9",
           "variable": ""
         },
         "secondary": {
           "isVar": true,
           "key": "$secondary",
           "name": "secondary",
-          "val": "#5163a6",
+          "val": "#67acbd",
           "variable": ""
         },
         "input": {
           "isVar": true,
           "key": "$input",
           "name": "input",
-          "val": "#364684",
+          "val": "#3e94a9",
           "variable": ""
         }
       },
@@ -41427,21 +41427,21 @@
         "isVar": true,
         "key": "$primary",
         "name": "primary",
-        "val": "#364684",
+        "val": "#3e94a9",
         "variable": ""
       },
       "$color.secondary": {
         "isVar": true,
         "key": "$secondary",
         "name": "secondary",
-        "val": "#5163a6",
+        "val": "#67acbd",
         "variable": ""
       },
       "$color.input": {
         "isVar": true,
         "key": "$input",
         "name": "input",
-        "val": "#364684",
+        "val": "#3e94a9",
         "variable": ""
       },
       "$radius.0": {

@@ -1,7 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from 'react';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
-  // ScrollView,
   Button,
   XStack,
   YGroup,
@@ -10,7 +9,6 @@ import {
   Avatar,
   YStack,
   Spinner,
-  Theme,
 } from "tamagui";
 import {socket} from "@/socket";
 import {Audio, InterruptionModeIOS} from 'expo-av';
@@ -174,6 +172,10 @@ export default function RecordScreen() {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+        source={require('@/assets/images/bg.png')}
+        style={styles.image}
+      >
       <StatusBar style="dark" />
       <XStack $sm={{ flexDirection: 'column', marginBottom: 10 }}>
         <YGroup alignSelf="center" bordered>
@@ -190,7 +192,7 @@ export default function RecordScreen() {
       <View style={styles.chat_box}>
         <ScrollView
           marginTop={10}
-          backgroundColor="#f9f9f9"
+          paddingTop={10}
           borderRadius="15"
           onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
           ref={scrollViewRef}
@@ -219,7 +221,7 @@ export default function RecordScreen() {
                   marginRight="$2"
                   padding="$3"
                   borderRadius="$4"
-                  backgroundColor={data.user ? 'green' : '#eee'}
+                  backgroundColor={data.user ? '$secondary' : '#eee'}
                   maxWidth="80%"
                 >
                   <Text >
@@ -247,17 +249,21 @@ export default function RecordScreen() {
             : <Button circular backgroundColor="$primary" color="white" onPress={startRecording} icon={Mic} size="$6" disabled={!isConnected} />
         }
       </View>
+      </ImageBackground>
     </View>
   );
 }
-// const screenHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'space-between',
     backgroundColor: '#fff',
+  },
+  image: {
+    flex: 1,
     padding: 10,
-    paddingTop:50
+    paddingTop: 50,
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
   socket_status: {
     flexDirection: 'row',
@@ -277,6 +283,7 @@ const styles = StyleSheet.create({
   record: {
     flex: 1,
     marginTop: 10,
+    marginBottom: 80,
     maxHeight: 65,
     alignSelf: 'center',
     justifyContent: 'flex-end'
