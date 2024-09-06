@@ -18,6 +18,7 @@ import { Link, useRouter } from "expo-router";
 interface ErrorType {
   email?: string,
   password?: string,
+  confirm?: string,
 }
 
 const Register = () => {
@@ -28,6 +29,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirm: "",
   });
 
   const handleChange = (field: any, value: any) => {
@@ -38,10 +40,17 @@ const Register = () => {
   };
 
   const handleValidation = () => {
+    Keyboard.dismiss;
     const newErrors: ErrorType = {};
 
     if (!formData.password) {
       newErrors.password = "Password is required";
+    }
+
+    if (formData.password && formData.confirm !== formData.password) {
+      console.log('formData.confirm', formData.confirm);
+      console.log('formData.password', formData.password);
+      newErrors.confirm = "Password not matching";
     }
 
     if (!formData.email) {
@@ -50,7 +59,6 @@ const Register = () => {
       newErrors.email = "Invalid email format";
     }
 
-    setLoading(false);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return false;
@@ -72,19 +80,23 @@ const Register = () => {
       } finally {
         setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
   };
 
   const register = async() => {
-    const response: any = await axios.post('http://192.168.1.47:3001/api/user/register', formData);
-    console.log('Register response:', response.data);
-    console.log('response.data?.error', response.data?.error);
+    const response: any = await axios.post('http://192.168.1.47:3001/user/register', {
+      email: formData.email,
+      password: formData.password
+    });
+    // console.log('Register response:', response.data);
     if (response.data?.error) {
       setErrors({
         error: response.data.message
       });
     } else {
-      await AsyncStorage.setItem('userToken', response.data.user?.token);
+      await AsyncStorage.setItem('userToken', response.data.user?.accessToken);
       setErrors({});
       router.replace('/')
     }
@@ -158,7 +170,7 @@ const Register = () => {
               placeholder="Confirm your password"
               placeholderTextColor="#bbb"
               secureTextEntry={true}
-              onChangeText={(value) => handleChange("password", value)}
+              onChangeText={(value) => handleChange("confirm", value)}
             />
             <Form.Trigger asChild>
               <Button
@@ -169,17 +181,16 @@ const Register = () => {
                 size="$5"
                 icon={loading ? <Spinner /> : null}
                 disabled={loading}
+                disabledStyle={{ backgroundColor: 'gray' }}
               >
                 Register
               </Button>
             </Form.Trigger>
-            <ErrorText />
           </Form>
-          <XStack style={styles.formFooter}>
-            <YStack gap="$3" justifyContent="flex-end">
-              <Text color="$secondary"><Link href={"/login"}>Already an account? Login now</Link></Text>
-            </YStack>
-          </XStack>
+          <View style={{ flex: 1, alignSelf: 'center', marginBottom: 50 }}>
+            <Text marginTop={20} marginBottom={10} color="$secondary"><Link href={"/login"}>Already an account? Login now</Link></Text>
+            <ErrorText />
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </ImageBackground>
@@ -191,6 +202,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     flexDirection: 'column',
+    padding: 50
   },
   image: {
     flex: 1,
@@ -198,16 +210,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   form: {
-    flex: 1,
-    paddingTop: 100,
-    alignSelf: 'center',
+    paddingTop: 50,
+    paddingBottom: 10,
     backgroundColor: 'none',
-  },
-  formFooter: {
-    flex: 1,
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingBottom: 60,
   },
   shadow: {
     shadowColor: 'rgb(135,184,199)',

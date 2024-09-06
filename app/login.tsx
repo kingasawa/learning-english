@@ -33,7 +33,6 @@ const Login = () => {
   });
 
  const handleChange = (field: any, value: any) => {
-    console.log('value', value);
     setFormData({
       ...formData,
       [field]: value,
@@ -59,7 +58,6 @@ const Login = () => {
       return false;
     } else {
       setErrors({});
-      console.log("Form data:", formData);
       return true;
     }
   };
@@ -79,16 +77,17 @@ const Login = () => {
   };
 
   const login = async() => {
-    // const response: any = await axios.post('https://simplecode.online/users', formData);
-    const response: any = await axios.post('http://192.168.1.47:3001/api/user/login', formData);
-    console.log('Login response:', response.data);
-    console.log('response.data?.error', response.data?.error);
+    const response: any = await axios.post('http://192.168.1.47:3001/auth/login', {
+      username: formData.email,
+      password: formData.password
+    });
+    // console.log('Login response:', response.data);
     if (response.data?.error) {
       setErrors({
         error: response.data.message
       });
     } else {
-      await AsyncStorage.setItem('userToken', response.data.user?.token);
+      await AsyncStorage.setItem('userToken', response.data.accessToken);
       setErrors({});
       router.replace('/')
     }
@@ -131,7 +130,6 @@ const Login = () => {
   }
 
   const ErrorText = () => {
-    console.log('errors', Object.values(errors));
     return (
       <Text style={{
         color: '#d62121',

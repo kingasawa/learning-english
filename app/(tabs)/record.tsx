@@ -69,6 +69,7 @@ export default function RecordScreen() {
 
     function onDisconnect() {
       setIsConnected(false);
+      setLoading(false);
       console.log('Disconnected from server');
     }
 
@@ -155,12 +156,20 @@ export default function RecordScreen() {
       try {
         console.log('Now, uploading to backend by call socket...');
         const response = await fetch(uri);
+        console.log('response', response);
         const blob = await response.blob();
-        socket.emit('uploadFile', {
-          blob,
+        console.log('blob', blob);
+        const formData = new FormData();
+        formData.append('file', blob);
+        const uploadResponse = await fetch('http://192.168.1.47:3001/user/upload', {
+          method: 'POST',
+          body: formData,
         });
         console.log('Waiting for response from server...');
+        const result = await uploadResponse.json();
+        console.log('uploadResponse11', result);
       } catch (error) {
+        setLoading(false);
         console.error('Error uploading file:', error);
       }
     }
