@@ -175,7 +175,7 @@ const Login = () => {
                 </Button>
               </Form.Trigger>
             </Form>
-            <XStack style={styles.formFooter}>
+            <XStack justifyContent="center">
               <YStack gap="$6" justifyContent="center">
                 <YStack gap="$3" alignItems="center">
                   <Text color="$secondary"><Link href={"/register"}>Forgot your password?</Link></Text>
@@ -209,11 +209,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     backgroundColor: 'none',
-  },
-  formFooter: {
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingBottom: 60,
   },
   shadow: {
     shadowColor: 'rgb(135,184,199)',

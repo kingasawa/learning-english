@@ -61,6 +61,8 @@ export default function RecordScreen() {
   useEffect(() => {
     if (socket.connected) {
       onConnect();
+    } else {
+      socket.connect();
     }
 
     function onConnect() {

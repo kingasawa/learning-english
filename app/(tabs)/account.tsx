@@ -41,7 +41,7 @@ export default function AccountScreen() {
   const router = useRouter();
   const [account, setAccount] = useState<any>({});
   const [loadingScreen, setLoadingScreen] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
   const [formData, setFormData] = useState({
@@ -317,7 +317,7 @@ export default function AccountScreen() {
       style={styles.imageBackground}
     >
       <AlertToast />
-      <XStack style={styles.container} justifyContent="center">
+      <XStack flex={1} justifyContent="center">
         <YStack gap="$6">
           <Dialog />
           <LogoutConfirm />
@@ -379,10 +379,6 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 30,
-  },
   image: {
     marginTop: 80,
     width: 150,
