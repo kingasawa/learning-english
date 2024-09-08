@@ -27004,7 +27004,7 @@
         "color025": "rgba(10,10,10,0.25)",
         "color05": "rgba(10,10,10,0.5)",
         "color075": "rgba(10,10,10,0.75)",
-        "background": "#3e94a9",
+        "background": "#0c52ac",
         "backgroundHover": "rgba(255,255,255,0.75)",
         "backgroundPress": "#f8f8f8",
         "backgroundFocus": "#f8f8f8",
@@ -27144,7 +27144,7 @@
         "color025": "rgba(255,255,255,0.25)",
         "color05": "rgba(255,255,255,0.5)",
         "color075": "rgba(255,255,255,0.75)",
-        "background": "#3e94a9",
+        "background": "#0c52ac",
         "backgroundHover": "#151515",
         "backgroundPress": "rgba(10,10,10,0.75)",
         "backgroundFocus": "rgba(10,10,10,0.75)",
@@ -38954,25 +38954,39 @@
           "val": "#af0404",
           "variable": ""
         },
+        "yellow": {
+          "isVar": true,
+          "key": "$yellow",
+          "name": "yellow",
+          "val": "#ffad1a",
+          "variable": ""
+        },
         "primary": {
           "isVar": true,
           "key": "$primary",
           "name": "primary",
-          "val": "#3e94a9",
+          "val": "#0c52ac",
           "variable": ""
         },
         "secondary": {
           "isVar": true,
           "key": "$secondary",
           "name": "secondary",
-          "val": "#67acbd",
+          "val": "#4e61a8",
           "variable": ""
         },
         "input": {
           "isVar": true,
           "key": "$input",
           "name": "input",
-          "val": "#3e94a9",
+          "val": "#4e61a8",
+          "variable": ""
+        },
+        "transparent": {
+          "isVar": true,
+          "key": "$transparent",
+          "name": "transparent",
+          "val": "rgba(24,24,24,0.29)",
           "variable": ""
         }
       },
@@ -41423,25 +41437,39 @@
         "val": "#af0404",
         "variable": ""
       },
+      "$color.yellow": {
+        "isVar": true,
+        "key": "$yellow",
+        "name": "yellow",
+        "val": "#ffad1a",
+        "variable": ""
+      },
       "$color.primary": {
         "isVar": true,
         "key": "$primary",
         "name": "primary",
-        "val": "#3e94a9",
+        "val": "#0c52ac",
         "variable": ""
       },
       "$color.secondary": {
         "isVar": true,
         "key": "$secondary",
         "name": "secondary",
-        "val": "#67acbd",
+        "val": "#4e61a8",
         "variable": ""
       },
       "$color.input": {
         "isVar": true,
         "key": "$input",
         "name": "input",
-        "val": "#3e94a9",
+        "val": "#4e61a8",
+        "variable": ""
+      },
+      "$color.transparent": {
+        "isVar": true,
+        "key": "$transparent",
+        "name": "transparent",
+        "val": "rgba(24,24,24,0.29)",
         "variable": ""
       },
       "$radius.0": {

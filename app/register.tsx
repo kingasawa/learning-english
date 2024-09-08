@@ -8,25 +8,28 @@ import {
   useTheme,
   Text,
   H6,
-  XStack,
-  YStack
-} from "tamagui"
-import axios from 'axios';
+} from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
+import { userRegister } from '../services/apiService';
+import { AlertToast } from "@/components/AlertToast";
+import Toast from "react-native-toast-message";
 
 interface ErrorType {
+  fullName?: string,
   email?: string,
   password?: string,
   confirm?: string,
 }
 
+const bgImage = require('@/assets/images/bg4.png');
+
 const Register = () => {
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
+    fullName: "",
     email: "",
     password: "",
     confirm: "",
@@ -47,6 +50,10 @@ const Register = () => {
       newErrors.password = "Password is required";
     }
 
+    if (!formData.fullName) {
+      newErrors.fullName = "FullName is required";
+    }
+
     if (formData.password && formData.confirm !== formData.password) {
       console.log('formData.confirm', formData.confirm);
       console.log('formData.password', formData.password);
@@ -60,10 +67,9 @@ const Register = () => {
     }
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      showToast('error', 'Error', Object.values(newErrors).join(', '))
       return false;
     } else {
-      setErrors({});
       console.log("Form data:", formData);
       return true;
     }
@@ -75,7 +81,7 @@ const Register = () => {
       try {
         await register()
       } catch (error) {
-        setErrors({ error: 'Register failed' });
+        showToast('error', 'Error', 'Register failed')
         console.error('Register failed:', error);
       } finally {
         setLoading(false);
@@ -86,18 +92,15 @@ const Register = () => {
   };
 
   const register = async() => {
-    const response: any = await axios.post('http://192.168.1.47:3001/user/register', {
+    const response: any = await userRegister({
+      fullName: formData.fullName,
       email: formData.email,
       password: formData.password
     });
-    // console.log('Register response:', response.data);
-    if (response.data?.error) {
-      setErrors({
-        error: response.data.message
-      });
+    if (response?.error) {
+      showToast('error', 'Error', response.message);
     } else {
-      await AsyncStorage.setItem('userToken', response.data.user?.accessToken);
-      setErrors({});
+      await AsyncStorage.setItem('userToken', response.user?.accessToken);
       router.replace('/')
     }
   };
@@ -106,26 +109,22 @@ const Register = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const ErrorText = () => {
-    return (
-      <Text style={{
-        color: '#d62121',
-        textAlign: 'center',
-        marginTop: 5,
-        display: Object.keys(errors).length > 0 ? 'block' : 'none'
-      }}>
-        {Object.values(errors).join('\n')}
-      </Text>
-    );
+  const showToast = (type, message, description) => {
+    Toast.show({
+      type: type,
+      text1: message,
+      text2: description
+    });
   }
 
   return (
     <ImageBackground
-      source={require('@/assets/images/bg.png')}
+      source={bgImage}
       style={styles.image}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
+          <AlertToast />
           <Form
             style={styles.form}
             gap="$4"
@@ -133,6 +132,19 @@ const Register = () => {
           >
             <H2 style={styles.shadow} color="$primary" alignSelf="center" marginBottom={30}>Member Register</H2>
             <H6 alignSelf="center" marginBottom={5} color="$primary">Create a new account</H6>
+            <Input
+              style={styles.shadow}
+              size="$5"
+              borderRadius={30}
+              backgroundColor="white"
+              borderColor="#e3e3e3"
+              focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
+              color={theme.primary}
+              placeholder="Enter your full name"
+              placeholderTextColor="#bbb"
+              textContentType="emailAddress"
+              onChangeText={(value) => handleChange("fullName", value)}
+            />
             <Input
               style={styles.shadow}
               size="$5"
@@ -189,7 +201,6 @@ const Register = () => {
           </Form>
           <View style={{ flex: 1, alignSelf: 'center', marginBottom: 50 }}>
             <Text marginTop={20} marginBottom={10} color="$secondary"><Link href={"/login"}>Already an account? Login now</Link></Text>
-            <ErrorText />
           </View>
         </View>
       </TouchableWithoutFeedback>

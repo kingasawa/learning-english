@@ -11,7 +11,7 @@ import {
   ImageBackground
 } from "react-native";
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from "expo-router";
+import { Stack, Redirect, useRouter } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,10 +22,10 @@ export default function RootLayout() {
   const DefaultTheme: Theme = {
     dark: false,
     colors: {
-      primary: '#3e94a9',
-      background: '#d4f2e8c7',
+      primary: '#0c52ac',
+      background: 'rgb(255,255,255)',
       card: 'rgb(255, 255, 255)',
-      text: '#3e94a9',
+      text: '#0c52ac',
       border: 'rgb(216, 216, 216)',
       notification: 'rgb(255, 59, 48)',
     },
@@ -53,7 +53,7 @@ export default function RootLayout() {
 
     async function prepare() {
       await checkLoginStatus();
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       if (loaded) {
         setIsReady(true);
       }
@@ -88,9 +88,9 @@ export default function RootLayout() {
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
+            <Stack.Screen name="register" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="+not-found" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="register" options={{ headerShown: false }} />
           </Stack>
         </View>
       </ThemeProvider>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    resizeMode: 'cover',
+    resizeMode: 'containt',
     justifyContent: 'center',
     width: '100%',
     height: '100%'

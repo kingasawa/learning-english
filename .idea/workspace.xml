@@ -6,18 +6,28 @@
   <component name="ChangeListManager">
     <list default="true" id="7da91f32-ff40-4ac3-ad06-54225fb6e2ce" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/app/(tabs)/account.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/bottalk.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/bg4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/AlertToast.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/apiService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/codestream.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codestream.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.tamagui/tamagui.config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.tamagui/tamagui.config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/device.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/notuse/device.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/record.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/record.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/bg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/bg1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/bg2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/bottalk.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/splash.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/splash_backup.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/components/AIConfigModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/AIConfigModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/socket.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tamagui.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tamagui.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -39,26 +49,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;com.google.cloudcode.ide_session_index&quot;: &quot;20240823_0000&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/kingasawa/Projects/learning-english/app/(tabs)&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/kingasawa/Projects/learning-english/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.google.cloudcode.ide_session_index": "20240823_0000",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/Users/kingasawa/Projects/learning-english/assets/images",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/kingasawa/Projects/learning-english/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/(tabs)" />
       <recent name="$PROJECT_DIR$/assets/images" />
+      <recent name="$PROJECT_DIR$/app/(auth)" />
       <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/app/(tabs)" />
       <recent name="D:\PROJECTS\my-app\app\(tabs)" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -86,6 +97,9 @@
       <workItem from="1724684755135" duration="23586000" />
       <workItem from="1725344944357" duration="988000" />
       <workItem from="1725374557930" duration="6762000" />
+      <workItem from="1725720400338" duration="9609000" />
+      <workItem from="1725759274509" duration="21450000" />
+      <workItem from="1725781989946" duration="3159000" />
     </task>
     <servers />
   </component>

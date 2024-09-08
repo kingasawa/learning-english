@@ -25,6 +25,7 @@ export default function RecordScreen() {
     user: boolean,
     message: string
   }
+  const bgImage = require('@/assets/images/bg4.png');
   const scrollViewRef = useRef<ScrollView>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<Recording>();
@@ -114,7 +115,7 @@ export default function RecordScreen() {
       console.log('Requesting permissions..');
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permission to access microphone was denied');
+        console.log('Permission to access microphone was denied.');
         return;
       }
       await Audio.setAudioModeAsync({
@@ -156,18 +157,11 @@ export default function RecordScreen() {
       try {
         console.log('Now, uploading to backend by call socket...');
         const response = await fetch(uri);
-        console.log('response', response);
         const blob = await response.blob();
-        console.log('blob', blob);
-        const formData = new FormData();
-        formData.append('file', blob);
-        const uploadResponse = await fetch('http://192.168.1.47:3001/user/upload', {
-          method: 'POST',
-          body: formData,
+        socket.emit('uploadFile', {
+          blob,
         });
         console.log('Waiting for response from server...');
-        const result = await uploadResponse.json();
-        console.log('uploadResponse11', result);
       } catch (error) {
         setLoading(false);
         console.error('Error uploading file:', error);
@@ -176,28 +170,27 @@ export default function RecordScreen() {
   };
 
   const CustomListItem = styled(ListItem, {
-    backgroundColor: '#525252',
+    backgroundColor: '$transparent',
   })
 
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('@/assets/images/bg.png')}
+        source={bgImage}
         style={styles.image}
       >
-      <StatusBar style="dark" />
-      <XStack $sm={{ flexDirection: 'column', marginBottom: 10 }}>
-        <YGroup alignSelf="center" bordered>
-          <YGroup.Item>
-            <CustomListItem
-              color={isConnected ? 'lightgreen' : 'red'}
-              icon={isConnected ? Wifi : WifiOff}
-              title={isConnected ? 'CONNECTED' : 'DISCONNECTED'}
-              subTitle={isConnected ? 'Begin to talk with AI' : 'Please waiting for reconnect...'} />
-          </YGroup.Item>
-        </YGroup>
-      </XStack>
       <AIConfigModal />
+        <XStack $sm={{ flexDirection: 'column', marginVertical: 5 }}>
+          <YGroup alignSelf="center">
+            <YGroup.Item>
+              <CustomListItem
+                color={isConnected ? 'lightgreen' : 'red'}
+                icon={isConnected ? Wifi : WifiOff}
+                title={isConnected ? 'CONNECTED TO THE SERVER' : 'DISCONNECTED FROM THE SERVER'}
+              />
+            </YGroup.Item>
+          </YGroup>
+        </XStack>
       <View style={styles.chat_box}>
         <ScrollView
           style={styles.scrollView}
@@ -228,7 +221,7 @@ export default function RecordScreen() {
                   marginRight="$2"
                   padding="$3"
                   borderRadius="$4"
-                  backgroundColor={data.user ? '$secondary' : '#eee'}
+                  backgroundColor={data.user ? '#ffd18c' : '#eee'}
                   maxWidth="80%"
                 >
                   <Text >
@@ -239,7 +232,7 @@ export default function RecordScreen() {
                   !data.user && (
                     <Button
                       unstyled
-                      icon={<Volume2 size="$1.5" color="gray"/>}
+                      icon={<Volume2 size="$1.5" color="#bbb"/>}
                       onPress={() => botSpeak(data.message)}
                     />
                   )
@@ -279,6 +272,8 @@ const styles = StyleSheet.create({
   },
   chat_box: {
     flex: 1,
+    backgroundColor: 'rgba(24,24,24,0.29)',
+    borderRadius: 8,
     shadowColor: '#464646',
     shadowOffset: {
       width: 0,
@@ -289,14 +284,13 @@ const styles = StyleSheet.create({
   },
   record: {
     flex: 1,
-    marginTop: 10,
-    marginBottom: 80,
+    marginTop: 3,
+    marginBottom: 75,
     maxHeight: 65,
     alignSelf: 'center',
     justifyContent: 'flex-end'
   },
   scrollView: {
-    marginTop: 10,
     paddingTop: 10,
     borderRadius: 15,
   }

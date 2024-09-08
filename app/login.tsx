@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ImageBackground, TouchableWithoutFeedback, Keyboard } from "react-native";
 import {
   Button,
@@ -10,29 +10,31 @@ import {
   Text,
   H6,
   XStack,
-  YStack
-} from "tamagui"
-import axios from 'axios';
+  YStack,
+} from "tamagui";
+import Toast, { ErrorToast } from 'react-native-toast-message';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
 import { Facebook, AtSign } from "@tamagui/lucide-icons";
+import { userLogin } from '../services/apiService';
+import { AlertToast } from "@/components/AlertToast";
 
 interface ErrorType {
   email?: string,
   password?: string,
 }
 
+const bgImage = require('@/assets/images/bg4.png');
 const Login = () => {
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
- const handleChange = (field: any, value: any) => {
+  const handleChange = (field: any, value: any) => {
     setFormData({
       ...formData,
       [field]: value,
@@ -54,10 +56,9 @@ const Login = () => {
 
     setLoading(false);
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      showToast('error', 'Error', Object.values(newErrors).join(', '))
       return false;
     } else {
-      setErrors({});
       return true;
     }
   };
@@ -68,8 +69,7 @@ const Login = () => {
       try {
         await login();
       } catch (error) {
-        setErrors({ error: 'Login failed' });
-        console.error('Login failed:', error);
+        showToast('error', 'Error', 'Login Failed')
       } finally {
         setLoading(false);
       }
@@ -77,18 +77,16 @@ const Login = () => {
   };
 
   const login = async() => {
-    const response: any = await axios.post('http://192.168.1.47:3001/auth/login', {
+    setLoading(true);
+    const response: any = await userLogin({
       username: formData.email,
       password: formData.password
     });
-    // console.log('Login response:', response.data);
-    if (response.data?.error) {
-      setErrors({
-        error: response.data.message
-      });
+    if (response?.error) {
+      showToast('error', 'Error', response.message);
     } else {
-      await AsyncStorage.setItem('userToken', response.data.accessToken);
-      setErrors({});
+      await AsyncStorage.setItem('userToken', response.accessToken);
+      setLoading(false)
       router.replace('/')
     }
   };
@@ -107,48 +105,29 @@ const Login = () => {
         size="$5"
         icon={<Facebook />}
         disabled={loading}
+        onPress={() => showToast('info', 'Info', 'Feature is not ready')}
       >
         Login with Facebook
       </Button>
     )
   }
 
-  const GoogleButton = () => {
-    return (
-      <Button
-        style={styles.shadow}
-        marginTop={30}
-        backgroundColor="#df4930"
-        borderRadius={30}
-        size="$5"
-        icon={<AtSign />}
-        disabled={loading}
-      >
-        Login with Google
-      </Button>
-    )
-  }
-
-  const ErrorText = () => {
-    return (
-      <Text style={{
-        color: '#d62121',
-        textAlign: 'center',
-        marginTop: 5,
-        display: Object.keys(errors).length > 0 ? 'block' : 'none'
-      }}>
-        {Object.values(errors).join('\n')}
-      </Text>
-    );
+  const showToast = (type, message, description) => {
+    Toast.show({
+      type: type,
+      text1: message,
+      text2: description
+    });
   }
 
   return (
       <ImageBackground
-        source={require('@/assets/images/bg.png')}
+        source={bgImage}
         style={styles.image}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.container}>
+            <AlertToast />
             <Form
               style={styles.form}
               gap="$4"
@@ -195,7 +174,6 @@ const Login = () => {
                   Login
                 </Button>
               </Form.Trigger>
-              <ErrorText />
             </Form>
             <XStack style={styles.formFooter}>
               <YStack gap="$6" justifyContent="center">
@@ -206,7 +184,6 @@ const Login = () => {
                 <YStack>
                   <Text color="$secondary" alignSelf="center">Or</Text>
                   <FacebookButton />
-                  <GoogleButton />
                 </YStack>
               </YStack>
             </XStack>
@@ -221,6 +198,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     flexDirection: 'column',
+    padding: 50
   },
   image: {
     flex: 1,
@@ -229,12 +207,10 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    paddingTop: 100,
-    alignSelf: 'center',
+    paddingTop: 60,
     backgroundColor: 'none',
   },
   formFooter: {
-    flex: 1,
     flexWrap: 'wrap',
     justifyContent: 'center',
     paddingBottom: 60,

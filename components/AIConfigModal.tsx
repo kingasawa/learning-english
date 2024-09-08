@@ -18,10 +18,11 @@ function DialogInstance() {
     <>
       <Button
         icon={Replace}
+        size="$5"
         onPress={() => setOpen(true)}
-        backgroundColor={theme.primary}
+        backgroundColor={theme.transparent}
         color="white"
-        pressStyle={{ backgroundColor: theme.secondary }}
+        pressStyle={{ backgroundColor: '$transparent' }}
       >
         Conversation Context
       </Button>

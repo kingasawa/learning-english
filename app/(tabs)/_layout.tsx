@@ -40,12 +40,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="device"
+        name="account"
         options={{
-          title: 'Device',
-          headerShown: true,
+          title: 'Account',
+          // headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='settings' color={focused ? primaryColor : color} />
+            <TabBarIcon name='account-circle' color={focused ? primaryColor : color} />
           ),
         }}
       />
