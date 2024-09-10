@@ -1,10 +1,10 @@
 // services/apiService.js
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AxiosRequestConfig} from "axios/index";
+import { AxiosRequestConfig } from "axios";
 
-// Khởi tạo Axios instance với cấu hình cơ bản
 const axiosConfig: AxiosRequestConfig = {
+  // baseURL: 'https://simplecode.online',  // URL gốc của API
   // baseURL: 'http://192.168.1.45:3001',  // URL gốc của API
   baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,  // URL gốc của API
   timeout: 10000,  // Thời gian chờ tối đa là 10 giây
@@ -41,6 +41,31 @@ api.interceptors.response.use(
   }
 );
 
+interface LoginPayload {
+  username: string,
+  password: string,
+}
+
+interface RegisterPayload {
+  fullName: string,
+  password: string,
+  email: string,
+  pushToken: string,
+  notification: boolean
+}
+
+interface UpdatePayload {
+  fullName?: string,
+  password?: string,
+  gender?: string,
+  birthday?: string
+}
+
+interface UpdateNotificationPayload {
+  notification: boolean,
+  pushToken?: string,
+}
+
 export const getExampleData = async () => {
   try {
     const response = await api.get('/example');
@@ -51,7 +76,7 @@ export const getExampleData = async () => {
   }
 };
 
-export const postExampleData = async (data) => {
+export const postExampleData = async (data: any) => {
   try {
     const response = await api.post('/example', data);
     return response.data;
@@ -72,12 +97,12 @@ export const getProfile = async () => {
   }
 };
 
-export const userLogin = async (data) => {
+export const userLogin = async (data: LoginPayload) => {
   try {
     const response = await api.post('/auth/login', data);
     console.log('response.data', response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error posting data:', error);
     return {
       error: true,
@@ -86,22 +111,42 @@ export const userLogin = async (data) => {
   }
 };
 
-export const userRegister = async (data) => {
+export const userRegister = async (data: RegisterPayload) => {
   try {
     const response = await api.post('/user/register', data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error posting data:', error);
-    throw error;
+    return {
+      error: true,
+      message: error.message,
+    }
   }
 };
 
-export const userUpdate = async (data) => {
+export const userUpdate = async (data: UpdatePayload) => {
   try {
     const response = await api.post('/auth/update', data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error posting data:', error);
-    throw error;
+    return {
+      error: true,
+      message: error.message,
+    }
+  }
+};
+
+export const updateNotification = async (data: UpdateNotificationPayload) => {
+  console.log('data', data);
+  try {
+    const response = await api.post('/auth/notification', data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error posting data:', error);
+    return {
+      error: true,
+      message: error.message,
+    }
   }
 };

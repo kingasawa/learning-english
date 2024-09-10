@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, ImageBackground, TouchableWithoutFeedback, Keyboard } from "react-native";
 import {
   Button,
@@ -15,8 +15,7 @@ import {
 import Toast, { ErrorToast } from 'react-native-toast-message';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
-import { Facebook, AtSign } from "@tamagui/lucide-icons";
-import { userLogin } from '../services/apiService';
+import { userLogin } from "@/services/apiService";
 import { AlertToast } from "@/components/AlertToast";
 
 interface ErrorType {
@@ -95,24 +94,7 @@ const Login = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const FacebookButton = () => {
-    return (
-      <Button
-        style={styles.shadow}
-        marginTop={30}
-        backgroundColor="#4267B2"
-        borderRadius={30}
-        size="$5"
-        icon={<Facebook />}
-        disabled={loading}
-        onPress={() => showToast('info', 'Info', 'Feature is not ready')}
-      >
-        Login with Facebook
-      </Button>
-    )
-  }
-
-  const showToast = (type, message, description) => {
+  const showToast = (type: string, message: string, description: string) => {
     Toast.show({
       type: type,
       text1: message,
@@ -180,10 +162,6 @@ const Login = () => {
                 <YStack gap="$3" alignItems="center">
                   <Text color="$secondary"><Link href={"/register"}>Forgot your password?</Link></Text>
                   <Text color="$secondary"><Link href={"/register"}>Don't have an account?</Link></Text>
-                </YStack>
-                <YStack>
-                  <Text color="$secondary" alignSelf="center">Or</Text>
-                  <FacebookButton />
                 </YStack>
               </YStack>
             </XStack>

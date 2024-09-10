@@ -11,9 +11,10 @@ import {
   ImageBackground
 } from "react-native";
 import { useFonts } from 'expo-font';
-import { Stack, Redirect, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NamedStyles = StyleSheet.NamedStyles;
 
 SplashScreen.preventAutoHideAsync().then();
 
@@ -43,7 +44,6 @@ export default function RootLayout() {
   useEffect(() => {
     async function checkLoginStatus() {
       const token = await AsyncStorage.getItem('userToken');
-      console.log('token', token);
       if (token) {
         setIsLoggedIn(true);
       } else {
@@ -62,7 +62,6 @@ export default function RootLayout() {
   }, [loaded]);
 
   const onLayoutRootView = useCallback(async () => {
-    console.log('isLoggedIn', isLoggedIn);
     if (isReady) {
       await SplashScreen.hideAsync();
       if (!isLoggedIn) {
@@ -98,17 +97,17 @@ export default function RootLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<NamedStyles<any>>({
   container: {
     flex: 1,
     justifyContent: 'center',
     flexDirection: 'column',
   },
   image: {
+    height: "100%",
     flex: 1,
-    resizeMode: 'containt',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%'
+    justifyContent: "center",
+    resizeMode: "contain",
+    width: "100%"
   },
 });

@@ -11,9 +11,11 @@ import {
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
-import { userRegister } from '../services/apiService';
+import { userRegister } from "@/services/apiService";
 import { AlertToast } from "@/components/AlertToast";
 import Toast from "react-native-toast-message";
+import * as Notifications from 'expo-notifications';
+import Constants from "expo-constants";
 
 interface ErrorType {
   fullName?: string,
@@ -28,12 +30,29 @@ const Register = () => {
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [pushToken, setPushToken] = useState<string>('');
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     confirm: "",
+    pushToken: ""
   });
+
+  const handleAddNotifications = async () => {
+    const projectId =
+      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status === 'granted') {
+      return (
+        await Notifications.getExpoPushTokenAsync({
+          projectId,
+        })
+      ).data;
+    } else {
+      return ""
+    }
+  };
 
   const handleChange = (field: any, value: any) => {
     setFormData({
@@ -92,10 +111,14 @@ const Register = () => {
   };
 
   const register = async() => {
+    const token = await handleAddNotifications();
+    console.log('token', token);
     const response: any = await userRegister({
       fullName: formData.fullName,
       email: formData.email,
-      password: formData.password
+      password: formData.password,
+      pushToken: token,
+      notification: token.length > 0
     });
     if (response?.error) {
       showToast('error', 'Error', response.message);
@@ -109,7 +132,7 @@ const Register = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const showToast = (type, message, description) => {
+  const showToast = (type: string, message: string, description: string) => {
     Toast.show({
       type: type,
       text1: message,

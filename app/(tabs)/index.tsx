@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Button } from 'tamagui';
+import { View, StyleSheet, Text, Image, ImageBackground } from "react-native";
+import { Button, H5, XStack, YStack } from "tamagui";
 import * as Speech from 'expo-speech';
+import NamedStyles = StyleSheet.NamedStyles;
+const bgImage = require('@/assets/images/bg4.png');
 
 export default function App() {
 
@@ -13,19 +15,54 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={{ alignSelf: 'center' }}>version @1.0.1</Text>
-      <Text style={{ alignSelf: 'center' }}>@trancatkhanh</Text>
-      <Button style={{ marginTop: 15, alignSelf: 'center' }} onPress={() => speak()}>Test sound</Button>
-    </View>
+      <ImageBackground
+        source={bgImage}
+        style={styles.imageBackground}
+      >
+        <View style={styles.container}>
+          <XStack
+            alignItems="center"
+            gap="$4"
+            backgroundColor="$yellow"
+            padding={15}
+            paddingTop={80}
+            shadowColor={'rgb(132,66,185)'}
+            shadowOffset={{
+              width: 0,
+              height: 1
+            }}
+            shadowOpacity={0.3}
+            shadowRadius={3}
+          >
+            <Image
+              source={require('@/assets/images/img.png')}
+              style={styles.image}
+            />
+            <YStack flex={1}>
+              <H5>Vì cộng đồng</H5>
+              <Text>
+                Ứng dụng được tạo ra cho mục đích chia sẻ cộng đồng, vì thế ứng dụng sẽ không thu bất cứ khoản phí nào, cũng như sẽ không xuất hiện quảng cáo trên ứng dụng.
+              </Text>
+            </YStack>
+          </XStack>
+        </View>
+      </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#f0f1f1',
-    padding: 8,
+  },
+  imageBackground: {
+    flex: 1,
+    justifyContent: "center",
+    resizeMode: "contain",
+    width: "100%",
+    height: "100%",
+  },
+  image: {
+    width: 80,
+    height: 80
   },
 });
