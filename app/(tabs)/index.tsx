@@ -41,7 +41,7 @@ export default function App() {
             <YStack flex={1}>
               <H5>Vì cộng đồng</H5>
               <Text>
-                Ứng dụng được tạo ra cho mục đích chia sẻ cộng đồng, vì thế ứng dụng sẽ không thu bất cứ khoản phí nào, cũng như sẽ không xuất hiện quảng cáo trên ứng dụng.
+                Ứng dụng này được tạo ra cho mục đích chia sẻ cộng đồng, vì thế ứng dụng sẽ không thu bất cứ khoản phí nào, cũng như sẽ không xuất hiện quảng cáo trên ứng dụng.
               </Text>
             </YStack>
           </XStack>
