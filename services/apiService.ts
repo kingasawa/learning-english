@@ -4,8 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AxiosRequestConfig } from "axios";
 
 const axiosConfig: AxiosRequestConfig = {
-  baseURL: 'http://192.168.1.63:3001',  // URL gốc của API
   // baseURL: 'https://simplecode.online',  // URL gốc của API
+  // baseURL: 'http://192.168.1.45:3001',  // URL gốc của API
+  baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,  // URL gốc của API
   timeout: 10000,  // Thời gian chờ tối đa là 10 giây
   headers: {
     'Content-Type': 'application/json',  // Định dạng JSON
