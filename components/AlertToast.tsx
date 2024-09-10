@@ -1,14 +1,14 @@
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
-import {Spinner, XStack, YStack} from "tamagui";
-import {BadgeAlert} from "@tamagui/lucide-icons";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { XStack, YStack } from "tamagui";
+import { BadgeAlert } from "@tamagui/lucide-icons";
 
 export const HEIGHT = 60;
 export const WIDTH = 340;
 export const BORDER_RADIUS = 6;
 
 const toastConfig = {
-  base: (props) => (
+  base: (props: any) => (
     <BaseToast
       {...props}
       style={{ borderLeftColor: 'pink' }}
@@ -19,7 +19,7 @@ const toastConfig = {
       }}
     />
   ),
-  info: (props) => (
+  info: (props: any) => (
     <BaseToast
       {...props}
       style={{ borderLeftColor: '#00a5c4', backgroundColor: '#f3fcff' }}
@@ -34,7 +34,7 @@ const toastConfig = {
       }}
     />
   ),
-  success: (props) => (
+  success: (props: any) => (
     <BaseToast
       {...props}
       style={{ borderLeftColor: '#67ad00', backgroundColor: '#f3ffe5' }}
@@ -49,7 +49,7 @@ const toastConfig = {
       }}
     />
   ),
-  error: (props) => (
+  error: (props: any) => (
     <ErrorToast
       {...props}
       style={{ borderLeftColor: '#a10303', backgroundColor: '#feece9' }}
@@ -64,7 +64,7 @@ const toastConfig = {
       }}
     />
   ),
-  warning: (props) => (
+  warning: (props: any) => (
     <BaseToast
       {...props}
       style={{ borderLeftColor: '#ee9005', backgroundColor: '#fff4de' }}
@@ -79,7 +79,7 @@ const toastConfig = {
       }}
     />
   ),
-  custom: (props) => (
+  custom: () => (
     <TouchableOpacity
       testID="toastTouchableContainer"
       style={[styles.base, styles.leadingBorder]}
@@ -117,7 +117,7 @@ const toastConfig = {
 /*
   2. Pass the config as prop to the Toast component instance
 */
-export function AlertToast(props) {
+export function AlertToast() {
   return (
     <Toast config={toastConfig} />
   );
@@ -143,18 +143,18 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 5,
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-start' // In case of RTL, the text will start from the right
+    alignItems: 'flex-start'
   },
   text1: {
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 2,
     color: '#ee9005',
-    width: '100%' // Fixes: https://github.com/calintamas/react-native-toast-message/issues/130
+    width: '100%'
   },
   text2: {
     fontSize: 12,
     color: '#ee9005',
-    width: '100%' // Fixes: https://github.com/calintamas/react-native-toast-message/issues/130
+    width: '100%'
   }
 });

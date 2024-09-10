@@ -20,56 +20,118 @@ import {
   XStack,
   YGroup,
   YStack,
-  RadioGroup, Form,
-} from 'tamagui';
+  RadioGroup, Form, Switch, Separator,
+} from "tamagui";
 import {
   Blend,
   CalendarDays,
   LogOut,
   Mail,
-  FilePen
-} from '@tamagui/lucide-icons'
+  FilePen, BellRing, PenLine
+} from "@tamagui/lucide-icons"
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { getProfile, userUpdate } from '../../services/apiService';
+import { getProfile, userUpdate, updateNotification } from "@/services/apiService";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AlertToast} from "@/components/AlertToast";
 import Toast from "react-native-toast-message";
+import * as Notifications from 'expo-notifications';
+import Constants from "expo-constants";
+
+interface UserDateType {
+  fullName: string,
+  birthday: string,
+  email: string,
+  gender: string,
+  pushToken: string,
+  notification: boolean
+}
+interface updateNotificationType {
+  notification: boolean,
+  pushToken?: string
+}
 
 export default function AccountScreen() {
   const router = useRouter();
   const [account, setAccount] = useState<any>({});
+  const [notificationStatus, setNotificationStatus] = useState<boolean>(true);
+  const [pushToken, setPushToken] = useState<string>('');
   const [loadingScreen, setLoadingScreen] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserDateType>({
     fullName: '',
     birthday: '',
     gender: '',
-  });
+    email: '',
+    pushToken: '',
+    notification: true,
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     console.log('aaaa');
-  //     getUserInfo().then();
-  //   }, [])
-  // );
+  });
 
   const bgImage = require('@/assets/images/bg4.png');
   useEffect(() => {
     getUserInfo().then();
   }, []);
 
-  const handleChange = (field: any, value: any) => {
+  const enableNotification = async() => {
+    const data: updateNotificationType = {
+      notification: true
+    }
+    if (!account.pushToken) {
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status === 'granted') {
+        data.pushToken = (
+          await Notifications.getExpoPushTokenAsync({
+            projectId,
+          })
+        ).data;
+      }
+    }
+    try {
+      console.log('data', data);
+      await updateNotification(data);
+    } catch (err) {
+      showToast('error', 'Error', 'Updated notification failed');
+    } finally {
+      getUserInfo().then();
+      showToast('success', 'Enabled', 'You were enabled notification successfully');
+    }
+  }
+
+  const disableNotification = async() => {
+    try {
+      await updateNotification({
+        notification: false
+      });
+    } catch (err) {
+      showToast('error', 'Error', 'Updated notification failed');
+    } finally {
+      getUserInfo().then();
+      showToast('warning', 'Disabled', 'You were disabled notification');
+    }
+  }
+
+  const handleChangeNotifications = async (checked: boolean) => {
+    if (checked) {
+      await enableNotification();
+    } else {
+      await disableNotification()
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
     });
   };
 
-  const handleOptionItemChange = (value) => {
+  const handleOptionItemChange = (value: string) => {
     setFormData({
       ...formData,
       gender: value,
@@ -77,14 +139,11 @@ export default function AccountScreen() {
   };
 
   const updateUserInfo = async() => {
-    console.log('formData', formData);
     if (handleValidate()) {
       setLoading(true);
       const response: any = await userUpdate(formData);
-      console.log('updateUserInfo', response);
       if (response?.error) {
         showToast('error', 'Error', response.message);
-        console.log('heeeeee');
       } else {
         getUserInfo().then();
         showToast('success', 'Updated', 'Your personal info was updated successfully');
@@ -96,12 +155,15 @@ export default function AccountScreen() {
 
   const getUserInfo = async() => {
     const userInfo = await getProfile();
-    const dataInfo = {
+    const dataInfo: UserDateType = {
       fullName: userInfo.fullName,
       birthday: userInfo.birthday,
       email: userInfo.email,
       gender: userInfo.gender || 'Male',
+      pushToken: userInfo.pushToken,
+      notification: userInfo.notification,
     }
+    setNotificationStatus(userInfo.notification)
     setAccount(dataInfo);
     setFormData(dataInfo);
     setLoadingScreen(false);
@@ -113,7 +175,6 @@ export default function AccountScreen() {
   }
   const handleValidate = () => {
     const isValidDate = moment(formData.birthday, 'DD/MM/YYYY', true).isValid();
-    console.log('isValidDate', isValidDate);
     if (!isValidDate) {
       setOpen(false);
       showToast('error', 'Error', 'Invalid date format (DD/MM/YYYY)');
@@ -166,13 +227,9 @@ export default function AccountScreen() {
                 <AlertDialog.Description color="$yellow">
                   Please correct your information.
                 </AlertDialog.Description>
-                <Form
-                  // style={styles.form}
-                  gap="$4"
-                  // onSubmit={() => handleSubmit() }
-                >
+                <Form gap="$4">
                   <YStack padding="$3" minWidth={300} gap="$2">
-                    <XStack alignItems="center" space="$4">
+                    <XStack alignItems="center" gap="$4">
                       <Label width={60} htmlFor="fullName">
                         Name
                       </Label>
@@ -185,7 +242,7 @@ export default function AccountScreen() {
                         onChangeText={(value) => handleChange("fullName", value)}
                       />
                     </XStack>
-                    <XStack alignItems="center" space="$4">
+                    <XStack alignItems="center" gap="$4">
                       <Label width={60} htmlFor="birthday">
                         Birthday
                       </Label>
@@ -197,13 +254,13 @@ export default function AccountScreen() {
                         onChangeText={(value) => handleChange("birthday", value)}
                       />
                     </XStack>
-                    <XStack alignItems="center" space="$4">
+                    <XStack alignItems="center" gap="$4">
                       <Label width={65} htmlFor="birthday">
                         Gender
                       </Label>
                       <RadioGroup
                         aria-labelledby="Select one item"
-                        defaultValue={account.gender || 'Male'}
+                        defaultValue={account.gender}
                         name="form"
                         onValueChange={handleOptionItemChange}
                       >
@@ -228,6 +285,7 @@ export default function AccountScreen() {
                       </RadioGroup>
                     </XStack>
                   </YStack>
+                  <Separator marginBottom={10} />
                 </Form>
                 <XStack gap="$3" justifyContent="flex-end">
                   <AlertDialog.Cancel asChild>
@@ -251,7 +309,7 @@ export default function AccountScreen() {
     )
   }
 
-  const showToast = (type, message, description) => {
+  const showToast = (type: string, message: string, description: string) => {
     Toast.show({
       type: type,
       text1: message,
@@ -318,7 +376,7 @@ export default function AccountScreen() {
     >
       <AlertToast />
       <XStack flex={1} justifyContent="center">
-        <YStack gap="$6">
+        <YStack gap="$4">
           <Dialog />
           <LogoutConfirm />
           <YStack alignSelf="center">
@@ -326,10 +384,13 @@ export default function AccountScreen() {
               source={require('@/assets/images/account-circle.png')}
               style={styles.image}
             />
-            <H3 color="$primary" alignSelf="center">{account.fullName}</H3>
+            <XStack gap="$2" justifyContent="center">
+              <H3 color="$primary" alignSelf="center">{account.fullName}</H3>
+              <Button unstyled color="$red" icon={PenLine} onPress={() => setOpen(true)} />
+            </XStack>
           </YStack>
-          <XStack $sm={{ flexDirection: 'column' }} style={styles.shadow}>
-            <YGroup alignSelf="center" width={320} size="$5" space={0.3}>
+          <XStack $sm={{ flexDirection: 'column' }}>
+            <YGroup alignSelf="center" width={320} size="$5" gap={0.3}>
               <YGroup.Item>
                 <ListItem
                   backgroundColor="$transparent"
@@ -354,16 +415,30 @@ export default function AccountScreen() {
                   icon={CalendarDays}
                 />
               </YGroup.Item>
+              <YGroup.Item>
+                <ListItem
+                  backgroundColor="$transparent"
+                  title="Enable Notification"
+                  subTitle="Notification"
+                  icon={BellRing}
+                  iconAfter={() => (
+                    <Switch
+                      native
+                      id="notification"
+                      defaultChecked={notificationStatus}
+                      onCheckedChange={(checked) => {
+                        setNotificationStatus(checked)
+                        return handleChangeNotifications(checked)
+                      }}
+                    >
+                      <Switch.Thumb animation="bouncy" />
+                    </Switch>
+                  )}
+                />
+              </YGroup.Item>
             </YGroup>
           </XStack>
           <YStack gap="$2">
-            <Button
-              backgroundColor="$secondary"
-              icon={<FilePen />}
-              onPress={() => setOpen(true)}
-            >
-              Edit
-            </Button>
             <Button
               backgroundColor="$red"
               icon={<LogOut />}
@@ -381,8 +456,8 @@ export default function AccountScreen() {
 const styles = StyleSheet.create({
   image: {
     marginTop: 80,
-    width: 150,
-    height: 150
+    width: 120,
+    height: 120
   },
   imageBackground: {
     flex: 1,
@@ -393,8 +468,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  shadow: {
-    shadowColor: 'rgb(242,200,255)',
   },
 });

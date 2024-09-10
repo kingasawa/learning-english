@@ -11,22 +11,12 @@ import {
   ImageBackground
 } from "react-native";
 import { useFonts } from 'expo-font';
-import { Stack, Redirect, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NamedStyles = StyleSheet.NamedStyles;
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
 
 SplashScreen.preventAutoHideAsync().then();
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -51,32 +41,9 @@ export default function RootLayout() {
 
   const router = useRouter();
 
-  async function registerForPushNotificationsAsync() {
-    if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      if (existingStatus !== 'granted') {
-        await Notifications.requestPermissionsAsync();
-      }
-      const projectId =
-        Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-      try {
-        const pushTokenString = (
-          await Notifications.getExpoPushTokenAsync({
-            projectId,
-          })
-        ).data;
-        console.log(pushTokenString);
-        return pushTokenString;
-      } catch (e: unknown) {
-        console.log('try error', e);
-      }
-    }
-  }
-
   useEffect(() => {
     async function checkLoginStatus() {
       const token = await AsyncStorage.getItem('userToken');
-      console.log('token', token);
       if (token) {
         setIsLoggedIn(true);
       } else {
@@ -92,11 +59,9 @@ export default function RootLayout() {
       }
     }
     prepare().then();
-    registerForPushNotificationsAsync().then()
   }, [loaded]);
 
   const onLayoutRootView = useCallback(async () => {
-    console.log('isLoggedIn', isLoggedIn);
     if (isReady) {
       await SplashScreen.hideAsync();
       if (!isLoggedIn) {

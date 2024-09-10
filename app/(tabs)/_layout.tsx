@@ -22,7 +22,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'About',
-          headerShown: true,
+          // headerShown: true,
           // tabBarBadge: 2,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='info' color={focused ? primaryColor : color} />
