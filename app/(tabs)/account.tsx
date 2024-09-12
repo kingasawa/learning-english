@@ -93,13 +93,13 @@ export default function AccountScreen() {
       }
     }
     try {
-      console.log('data', data);
-      await updateNotification(data);
+      if (data.pushToken) {
+        await updateNotification(data);
+        getUserInfo().then();
+        showToast('success', 'Enabled', 'You were enabled notification successfully');
+      }
     } catch (err) {
       showToast('error', 'Error', 'Updated notification failed');
-    } finally {
-      getUserInfo().then();
-      showToast('success', 'Enabled', 'You were enabled notification successfully');
     }
   }
 
@@ -384,7 +384,7 @@ export default function AccountScreen() {
               source={require('@/assets/images/account-circle.png')}
               style={styles.image}
             />
-            <XStack gap="$2" justifyContent="center">
+            <XStack gap="$2" alignItems="center">
               <H3 color="$primary" alignSelf="center">{account.fullName}</H3>
               <Button unstyled color="$red" icon={PenLine} onPress={() => setOpen(true)} />
             </XStack>
@@ -455,9 +455,10 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   image: {
-    marginTop: 80,
+    marginTop: 120,
     width: 120,
-    height: 120
+    height: 120,
+    alignSelf: 'center'
   },
   imageBackground: {
     flex: 1,

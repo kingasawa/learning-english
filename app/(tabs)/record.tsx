@@ -35,6 +35,8 @@ export default function RecordScreen() {
   function botSpeak (text: string){
     Speech.speak(text, {
       language: 'en-US',
+      pitch: 0.8,
+      rate: 0.5
     });
   }
 

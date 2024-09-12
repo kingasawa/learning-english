@@ -1,10 +1,22 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, Image, ImageBackground } from "react-native";
+import { View, StyleSheet, Text, Image, ImageBackground, Button } from "react-native";
 import { H3, H5, XStack, YStack } from "tamagui";
 import LessonCard from "@/components/LessonCard";
+import * as Speech from 'expo-speech';
 const bgImage = require('@/assets/images/bg4.png');
 
 export default function App() {
+  const speak = async() => {
+    const thingToSay = 'How are you today';
+    const voices = await Speech.getAvailableVoicesAsync();
+    // console.log('voices', voices);
+    Speech.speak(thingToSay, {
+      language: 'en-US',
+      // pitch: 0.8,
+      rate: 0.6
+    });
+  };
+
   return (
       <ImageBackground
         source={bgImage}
@@ -58,6 +70,7 @@ export default function App() {
               url=""
             />
           </YStack>
+          <Button title="Press to test sound" onPress={speak} />
         </View>
       </ImageBackground>
   );

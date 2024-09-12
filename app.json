@@ -42,6 +42,14 @@
     },
     "plugins": [
       "expo-notifications",
+      {
+        "icon": "./assets/images/img.png",
+        "color": "#ffffff",
+        "defaultChannel": "default",
+        "sounds": [
+          "./assets/notification.mp3"
+        ]
+      },
       "expo-router",
       [
         "expo-camera",
