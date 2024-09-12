@@ -48,7 +48,7 @@
           "color": "#ffffff",
           "defaultChannel": "default",
           "sounds": [
-            "./assets/notification2.wav"
+            "./assets/sounds/notification2.wav"
           ]
         }
       ],
