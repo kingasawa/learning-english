@@ -21,11 +21,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'About',
+          title: 'Lesson',
           // headerShown: true,
           // tabBarBadge: 2,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='info' color={focused ? primaryColor : color} />
+            <TabBarIcon name='add-moderator' color={focused ? primaryColor : color} />
           ),
         }}
       />
