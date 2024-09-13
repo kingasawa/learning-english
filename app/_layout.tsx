@@ -87,7 +87,7 @@ export default function RootLayout() {
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
+            <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="register" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="+not-found" options={{ headerShown: false }} />
           </Stack>

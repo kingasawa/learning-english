@@ -1,15 +1,12 @@
-// services/apiService.js
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AxiosRequestConfig } from "axios";
 
 const axiosConfig: AxiosRequestConfig = {
-  // baseURL: 'https://simplecode.online',  // URL gốc của API
-  // baseURL: 'http://192.168.1.45:3001',  // URL gốc của API
-  baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,  // URL gốc của API
-  timeout: 10000,  // Thời gian chờ tối đa là 10 giây
+  baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,
+  timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',  // Định dạng JSON
+    'Content-Type': 'application/json',
   },
 }
 const api = axios.create(axiosConfig);
@@ -44,6 +41,10 @@ api.interceptors.response.use(
 interface LoginPayload {
   username: string,
   password: string,
+}
+
+interface ResetPasswordPayload {
+  email: string,
 }
 
 interface RegisterPayload {
@@ -141,6 +142,20 @@ export const updateNotification = async (data: UpdateNotificationPayload) => {
   console.log('data', data);
   try {
     const response = await api.post('/auth/notification', data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error posting data:', error);
+    return {
+      error: true,
+      message: error.message,
+    }
+  }
+};
+
+export const userResetPassword = async (data: ResetPasswordPayload) => {
+  console.log('data', data);
+  try {
+    const response = await api.post('/user/reset-password', data);
     return response.data;
   } catch (error: any) {
     console.error('Error posting data:', error);

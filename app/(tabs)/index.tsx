@@ -3,9 +3,9 @@ import { View, StyleSheet, Text, Image, ImageBackground, Button } from "react-na
 import { H3, H5, XStack, YStack } from "tamagui";
 import LessonCard from "@/components/LessonCard";
 import * as Speech from 'expo-speech';
-const bgImage = require('@/assets/images/bg4.png');
 
 export default function App() {
+  const bgImage = require('@/assets/images/bg4.png');
   const speak = async() => {
     const thingToSay = 'How are you today';
     const voices = await Speech.getAvailableVoicesAsync();

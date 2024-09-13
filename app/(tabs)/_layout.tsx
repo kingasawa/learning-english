@@ -22,8 +22,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Lesson',
-          // headerShown: true,
-          // tabBarBadge: 2,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='add-moderator' color={focused ? primaryColor : color} />
           ),
@@ -33,7 +31,6 @@ export default function TabLayout() {
         name="record"
         options={{
           title: 'Learn',
-          // headerShown: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='school' color={focused ? primaryColor : color} />
           ),
@@ -43,7 +40,6 @@ export default function TabLayout() {
         name="account"
         options={{
           title: 'Account',
-          // headerShown: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='account-circle' color={focused ? primaryColor : color} />
           ),

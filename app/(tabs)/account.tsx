@@ -27,14 +27,15 @@ import {
   CalendarDays,
   LogOut,
   Mail,
-  FilePen, BellRing, PenLine
-} from "@tamagui/lucide-icons"
+  BellRing,
+  PenLine
+} from "@tamagui/lucide-icons";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { getProfile, userUpdate, updateNotification } from "@/services/apiService";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AlertToast} from "@/components/AlertToast";
+import { AlertToast } from "@/components/AlertToast";
 import Toast from "react-native-toast-message";
 import * as Notifications from 'expo-notifications';
 import Constants from "expo-constants";
@@ -56,7 +57,6 @@ export default function AccountScreen() {
   const router = useRouter();
   const [account, setAccount] = useState<any>({});
   const [notificationStatus, setNotificationStatus] = useState<boolean>(true);
-  const [pushToken, setPushToken] = useState<string>('');
   const [loadingScreen, setLoadingScreen] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);

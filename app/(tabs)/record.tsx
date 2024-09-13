@@ -10,11 +10,10 @@ import {
   YStack,
   Spinner,
 } from "tamagui";
-import {socket} from "@/socket";
-import {Audio, InterruptionModeIOS} from 'expo-av';
-import { StatusBar } from 'expo-status-bar'
+import { socket } from "@/socket";
+import { Audio, InterruptionModeIOS } from 'expo-av';
 import * as Speech from 'expo-speech';
-import {Recording} from "expo-av/build/Audio/Recording";
+import { Recording } from "expo-av/build/Audio/Recording";
 import * as Haptics from 'expo-haptics';
 import { Mic, MicOff, Volume2, Wifi, WifiOff } from "@tamagui/lucide-icons"
 import { AIConfigModal } from "@/components/AIConfigModal"
@@ -116,10 +115,8 @@ export default function RecordScreen() {
   async function startRecording() {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      console.log('Requesting permissions..');
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permission to access microphone was denied.');
         return;
       }
       await Audio.setAudioModeAsync({
