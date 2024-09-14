@@ -261,7 +261,7 @@ const Register = () => {
             <Form.Trigger asChild>
               <Button
                 style={styles.shadow}
-                marginTop={30}
+                marginTop={10}
                 backgroundColor="$primary"
                 borderRadius={30}
                 size="$5"
@@ -273,7 +273,7 @@ const Register = () => {
               </Button>
             </Form.Trigger>
           </Form>
-          <View style={{ flex: 1, alignSelf: 'center', marginBottom: 50 }}>
+          <View style={{ alignSelf: 'center', marginBottom: 50 }}>
             <Text marginTop={20} marginBottom={10} color="$secondary"><Link href={"/login"}>Bạn đã có tài khoản? Đăng nhập</Link></Text>
           </View>
         </View>
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   form: {
-    paddingTop: 50,
+    paddingTop: 80,
     paddingBottom: 10,
     backgroundColor: 'none',
   },
