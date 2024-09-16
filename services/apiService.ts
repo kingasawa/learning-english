@@ -38,6 +38,11 @@ api.interceptors.response.use(
   }
 );
 
+interface messagePayload {
+  message: string,
+  messages?: string[],
+}
+
 interface LoginPayload {
   username: string,
   password: string,
@@ -156,6 +161,19 @@ export const userResetPassword = async (data: ResetPasswordPayload) => {
   console.log('data', data);
   try {
     const response = await api.post('/user/reset-password', data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Error posting data:', error);
+    return {
+      error: true,
+      message: error.message,
+    }
+  }
+};
+
+export const sendMessageToBot = async (data: messagePayload) => {
+  try {
+    const response = await api.post('/user/talk', data);
     return response.data;
   } catch (error: any) {
     console.error('Error posting data:', error);
