@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AxiosRequestConfig } from "axios";
 
 const axiosConfig: AxiosRequestConfig = {
-  baseURL: process.env.EXPO_PUBLIC_BACKEND_URL,
+  baseURL: "https://simplecode.online",
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
