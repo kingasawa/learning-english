@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^2.0.0",
+    "@react-native-voice/voice": "^3.2.4",
     "@react-navigation/native": "^6.1.18",
     "@tamagui/babel-plugin": "^1.109.8",
     "@tamagui/config": "^1.109.8",
