@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from 'react';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import {
   Button,
   XStack,
@@ -35,6 +35,7 @@ export default function RecordScreen() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [error, setError] = useState('');
+  const [status, setStatus] = useState<string>('');
   const [results, setResults] = useState<string>('');
 
   function botSpeak (text: string){
@@ -47,6 +48,7 @@ export default function RecordScreen() {
 
   useEffect(() => {
     Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechEnd = onSpeechEnd;
     Voice.onSpeechError = onSpeechError;
     Voice.onSpeechResults = onSpeechResults;
@@ -59,7 +61,7 @@ export default function RecordScreen() {
   async function startRecording() {
     resetState();
     try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      // await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       await Voice.start('en-US');
     } catch (e) {
       console.error(e);
@@ -67,7 +69,7 @@ export default function RecordScreen() {
   }
 
   async function stopRecording() {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    // await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     try {
       await Voice.stop();
     } catch (e) {
@@ -76,14 +78,21 @@ export default function RecordScreen() {
   }
 
   const onSpeechStart = (e: any) => {
+    setStatus('speech start');
     setRecording(true);
   };
 
+  const onSpeechRecognized = (e: SpeechRecognizedEvent) => {
+    setStatus('speech recognize')
+  };
+
   const onSpeechEnd = (e: any) => {
+    setStatus('speech end')
     setRecording(false);
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
+    setStatus('speech error')
     setError(JSON.stringify(e.error));
   };
 
@@ -122,6 +131,7 @@ export default function RecordScreen() {
         style={styles.image}
       >
       <AIConfigModal />
+      <Text>status: {status}</Text>
       <View style={styles.chat_box}>
         <ScrollView
           style={styles.scrollView}
@@ -174,11 +184,12 @@ export default function RecordScreen() {
         </ScrollView>
       </View>
       <View style={styles.record}>
-        {
-          recording || loading
-            ? <Button circular backgroundColor="$red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" disabled={loading} />
-            : <Button circular backgroundColor="$primary" color="white" onPress={startRecording} icon={Mic} size="$6" disabled={!isConnected} />
-        }
+        <TouchableHighlight onPress={startRecording}>
+          <Text style={styles.action}>Start Recognizing</Text>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={startRecording}>
+          <Text style={styles.action}>Stop Recognizing</Text>
+        </TouchableHighlight>
       </View>
       </ImageBackground>
     </View>
@@ -224,5 +235,11 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingTop: 10,
     borderRadius: 15,
-  }
+  },
+  action: {
+    textAlign: 'center',
+    color: '#0000FF',
+    marginVertical: 5,
+    fontWeight: 'bold',
+  },
 });
