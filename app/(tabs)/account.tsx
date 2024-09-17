@@ -96,7 +96,7 @@ export default function AccountScreen() {
       if (data.pushToken) {
         await updateNotification(data);
         getUserInfo().then();
-        showToast('success', 'Enabled', 'You were enabled notification successfully');
+        showToast('success', 'Enabled', 'Bạn đã bật thông báo');
       }
     } catch (err) {
       showToast('error', 'Error', 'Updated notification failed');
@@ -112,7 +112,7 @@ export default function AccountScreen() {
       showToast('error', 'Error', 'Updated notification failed');
     } finally {
       getUserInfo().then();
-      showToast('warning', 'Disabled', 'You were disabled notification');
+      showToast('warning', 'Disabled', 'Bạn đã tắt thông báo');
     }
   }
 
@@ -146,7 +146,7 @@ export default function AccountScreen() {
         showToast('error', 'Error', response.message);
       } else {
         getUserInfo().then();
-        showToast('success', 'Updated', 'Your personal info was updated successfully');
+        showToast('success', 'Updated', 'Cập nhật thông tin cá nhân thành công');
       }
       setOpen(false);
       setLoading(false)
@@ -177,7 +177,7 @@ export default function AccountScreen() {
     const isValidDate = moment(formData.birthday, 'DD/MM/YYYY', true).isValid();
     if (!isValidDate) {
       setOpen(false);
-      showToast('error', 'Error', 'Invalid date format (DD/MM/YYYY)');
+      showToast('error', 'Error', 'Sai định dạng (DD/MM/YYYY)');
     }
     return isValidDate;
   }
@@ -186,7 +186,7 @@ export default function AccountScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" />
-        <Text>Fetching account data...</Text>
+        <Text>Đang tải thông tin cá nhân...</Text>
       </View>
     );
   }
@@ -223,15 +223,15 @@ export default function AccountScreen() {
               y={-100}
             >
               <YStack gap="$2">
-                <AlertDialog.Title color="$yellow">Edit Info</AlertDialog.Title>
+                <AlertDialog.Title color="$yellow">Sửa thông tin</AlertDialog.Title>
                 <AlertDialog.Description color="$yellow">
-                  Please correct your information.
+                  Điền thông tin cá nhân.
                 </AlertDialog.Description>
                 <Form gap="$4">
                   <YStack padding="$3" minWidth={300} gap="$2">
                     <XStack alignItems="center" gap="$4">
-                      <Label width={60} htmlFor="fullName">
-                        Name
+                      <Label width={75} htmlFor="fullName">
+                        Họ tên
                       </Label>
                       <Input
                         backgroundColor="white"
@@ -243,8 +243,8 @@ export default function AccountScreen() {
                       />
                     </XStack>
                     <XStack alignItems="center" gap="$4">
-                      <Label width={60} htmlFor="birthday">
-                        Birthday
+                      <Label width={75} htmlFor="birthday">
+                        Ngày sinh
                       </Label>
                       <Input
                         backgroundColor="white"
@@ -255,8 +255,8 @@ export default function AccountScreen() {
                       />
                     </XStack>
                     <XStack alignItems="center" gap="$4">
-                      <Label width={65} htmlFor="birthday">
-                        Gender
+                      <Label width={75} htmlFor="birthday">
+                        Giới tính
                       </Label>
                       <RadioGroup
                         aria-labelledby="Select one item"
@@ -270,7 +270,7 @@ export default function AccountScreen() {
                               <RadioGroup.Indicator />
                             </RadioGroup.Item>
                             <Label htmlFor="radiogroup-male">
-                              Male
+                              Nam
                             </Label>
                           </XStack>
                           <XStack alignItems="center" gap="$2">
@@ -278,7 +278,7 @@ export default function AccountScreen() {
                               <RadioGroup.Indicator />
                             </RadioGroup.Item>
                             <Label htmlFor="radiogroup-female">
-                              Female
+                              Nữ
                             </Label>
                           </XStack>
                         </XStack>
@@ -289,7 +289,7 @@ export default function AccountScreen() {
                 </Form>
                 <XStack gap="$3" justifyContent="flex-end">
                   <AlertDialog.Cancel asChild>
-                    <Button backgroundColor="gray" onPress={() => setOpen(false)}>Cancel</Button>
+                    <Button backgroundColor="gray" onPress={() => setOpen(false)}>Đóng</Button>
                   </AlertDialog.Cancel>
                   <AlertDialog.Action asChild>
                     <Button
@@ -297,7 +297,7 @@ export default function AccountScreen() {
                       onPress={() => updateUserInfo()}
                       icon={loading ? <Spinner /> : null}
                     >
-                      Update
+                      Cập nhật
                     </Button>
                   </AlertDialog.Action>
                 </XStack>
@@ -403,7 +403,7 @@ export default function AccountScreen() {
                 <ListItem
                   backgroundColor="$transparent"
                   title={account.gender || 'No data'}
-                  subTitle="Gender"
+                  subTitle="Giới tính"
                   icon={Blend}
                 />
               </YGroup.Item>
@@ -411,15 +411,15 @@ export default function AccountScreen() {
                 <ListItem
                   backgroundColor="$transparent"
                   title={account.birthday || 'No data'}
-                  subTitle="Age"
+                  subTitle="Ngày sinh"
                   icon={CalendarDays}
                 />
               </YGroup.Item>
               <YGroup.Item>
                 <ListItem
                   backgroundColor="$transparent"
-                  title="Enable Notification"
-                  subTitle="Notification"
+                  title="Bật thông báo"
+                  subTitle="Thông báo"
                   icon={BellRing}
                   iconAfter={() => (
                     <Switch
@@ -444,7 +444,7 @@ export default function AccountScreen() {
               icon={<LogOut />}
               onPress={() => setOpenConfirm(true)}
             >
-              Logout
+              Thoát
             </Button>
           </YStack>
         </YStack>

@@ -21,7 +21,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Lesson',
+          title: 'Bài học',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='add-moderator' color={focused ? primaryColor : color} />
           ),
@@ -30,7 +30,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="record"
         options={{
-          title: 'Learn',
+          title: 'Giao tiếp',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='school' color={focused ? primaryColor : color} />
           ),
@@ -39,7 +39,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="account"
         options={{
-          title: 'Account',
+          title: 'Tài khoản',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name='account-circle' color={focused ? primaryColor : color} />
           ),

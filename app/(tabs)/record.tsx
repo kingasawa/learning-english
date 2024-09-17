@@ -1,14 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   Button,
   XStack,
-  YGroup,
-  ListItem,
-  styled,
   Avatar,
   YStack,
-  Spinner,
 } from "tamagui";
 import Voice, {
   SpeechRecognizedEvent,
@@ -17,9 +13,10 @@ import Voice, {
 } from '@react-native-voice/voice';
 import * as Speech from 'expo-speech';
 import * as Haptics from 'expo-haptics';
-import { Mic, MicOff, Volume2, Wifi, WifiOff } from "@tamagui/lucide-icons"
-import { AIConfigModal } from "@/components/AIConfigModal"
+import { Mic, MicOff, Volume2 } from "@tamagui/lucide-icons"
 import { sendMessageToBot } from "@/services/apiService"
+import { useFocusEffect } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecordScreen() {
   interface conversationTypes {
@@ -29,14 +26,13 @@ export default function RecordScreen() {
   }
   const bgImage = require('@/assets/images/bg4.png');
   const scrollViewRef = useRef<ScrollView>(null);
-  const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<boolean>(false);
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
 
-  const [error, setError] = useState('');
-  const [textMessage, setTextMessage] = useState('');
+  const [error, setError] = useState<string>('');
+  const [textMessage, setTextMessage] = useState<string>('');
+  const [context, setContext] = useState<string>('');
   const [status, setStatus] = useState<string>('');
-  const [results, setResults] = useState<string>('');
 
   function botSpeak (text: string){
     Speech.speak(text, {
@@ -45,6 +41,15 @@ export default function RecordScreen() {
       rate: 0.5
     });
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      startLearning().then()
+      return () => {
+        stopLearning().then()
+      };
+    }, [])
+  );
 
   useEffect(() => {
     Voice.onSpeechStart = onSpeechStart;
@@ -57,6 +62,18 @@ export default function RecordScreen() {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
+
+  async function startLearning() {
+    const context: string = await AsyncStorage.getItem('context') || '';
+    console.log('context', context);
+    setContext(context);
+  }
+
+  async function stopLearning() {
+    const context = await AsyncStorage.removeItem('context');
+    console.log('context', context);
+    setContext('');
+  }
 
   async function startRecording() {
     setStatus('start recording');
@@ -111,7 +128,7 @@ export default function RecordScreen() {
   };
 
   async function onBotChat(message: string){
-    const response = await sendMessageToBot({ message }).then()
+    const response = await sendMessageToBot({ message, context }).then()
     const newMessage: conversationTypes = {
       id: conversation.length + 1,
       user: false,
@@ -123,7 +140,6 @@ export default function RecordScreen() {
 
   const resetState = () => {
     setError('');
-    setResults('');
   };
 
   return (
@@ -132,10 +148,14 @@ export default function RecordScreen() {
         source={bgImage}
         style={styles.image}
       >
-      <YStack>
-        <Text>status: {status}</Text>
-        <Text>message: {textMessage}</Text>
-      </YStack>
+        {
+          error && (
+            <YStack>
+              <Text>status: {status}</Text>
+              <Text>error: {error}</Text>
+            </YStack>
+          )
+        }
       <View style={styles.chat_box}>
         <ScrollView
           style={styles.scrollView}
@@ -209,11 +229,6 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     resizeMode: 'cover',
     justifyContent: 'center',
-  },
-  socket_status: {
-    flexDirection: 'row',
-    padding: 10,
-    alignItems: 'center'
   },
   chat_box: {
     flex: 1,

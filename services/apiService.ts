@@ -41,6 +41,7 @@ api.interceptors.response.use(
 interface messagePayload {
   message: string,
   messages?: string[],
+  context?: string,
 }
 
 interface LoginPayload {
