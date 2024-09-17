@@ -20,9 +20,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecordScreen() {
   interface conversationTypes {
-    id: number,
-    user: boolean,
-    message: string
+    role: string,
+    content: string
   }
   const bgImage = require('@/assets/images/bg4.png');
   const scrollViewRef = useRef<ScrollView>(null);
@@ -31,7 +30,6 @@ export default function RecordScreen() {
 
   const [error, setError] = useState<string>('');
   const [textMessage, setTextMessage] = useState<string>('');
-  const [context, setContext] = useState<string>('');
   const [status, setStatus] = useState<string>('');
 
   function botSpeak (text: string){
@@ -66,13 +64,16 @@ export default function RecordScreen() {
   async function startLearning() {
     const context: string = await AsyncStorage.getItem('context') || '';
     console.log('context', context);
-    setContext(context);
+    const newMessage: conversationTypes = {
+      role: 'system',
+      content: context
+    }
+    setConversation((prevConversation) => [...prevConversation, newMessage]);
   }
 
   async function stopLearning() {
-    const context = await AsyncStorage.removeItem('context');
-    console.log('context', context);
-    setContext('');
+    await AsyncStorage.removeItem('context');
+    setConversation([]);
   }
 
   async function startRecording() {
@@ -93,12 +94,11 @@ export default function RecordScreen() {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     try {
       const newMessage: conversationTypes = {
-        id: conversation.length + 1,
-        user: true,
-        message: textMessage
+        role: 'user',
+        content: textMessage
       }
       setConversation((prevConversation) => [...prevConversation, newMessage]);
-      onBotChat(textMessage).then()
+      onBotChat(conversation).then()
       await Voice.stop();
     } catch (e) {
       console.error(e);
@@ -127,12 +127,11 @@ export default function RecordScreen() {
     setTextMessage(message)
   };
 
-  async function onBotChat(message: string){
-    const response = await sendMessageToBot({ message, context }).then()
+  async function onBotChat(conversation: conversationTypes[]){
+    const response = await sendMessageToBot({ conversation }).then()
     const newMessage: conversationTypes = {
-      id: conversation.length + 1,
-      user: false,
-      message: response.message
+      role: 'assistant',
+      content: response.message
     }
     setConversation((prevConversation) => [...prevConversation, newMessage]);
     botSpeak(response.message);
@@ -165,13 +164,13 @@ export default function RecordScreen() {
           { conversation?.length > 0 && conversation.map((data, index) => {
             return (
               <XStack
-                key={data.id+index}
+                key={index}
                 alignItems="center"
-                justifyContent={data.user ? 'flex-end' : 'flex-start'}
+                justifyContent={data.role === 'user' ? 'flex-end' : 'flex-start'}
                 marginBottom={10}
               >
                 {
-                  !data.user && (
+                  data.role === 'assistant' && (
                     <>
                       <Avatar circular size="$3" marginRight="$2" marginLeft="$2">
                         <Avatar.Image
@@ -186,19 +185,19 @@ export default function RecordScreen() {
                   marginRight="$2"
                   padding="$3"
                   borderRadius="$4"
-                  backgroundColor={data.user ? '#ffd18c' : '#eee'}
+                  backgroundColor={data.role === 'user' ? '#ffd18c' : '#eee'}
                   maxWidth="80%"
                 >
                   <Text >
-                    {data.message}
+                    {data.content}
                   </Text>
                 </YStack>
                 {
-                  !data.user && (
+                  data.role === 'assistant' && (
                     <Button
                       unstyled
                       icon={<Volume2 size="$1.5" color="#bbb"/>}
-                      onPress={() => botSpeak(data.message)}
+                      onPress={() => botSpeak(data.content)}
                     />
                   )
                 }

@@ -39,9 +39,12 @@ api.interceptors.response.use(
 );
 
 interface messagePayload {
-  message: string,
-  messages?: string[],
-  context?: string,
+  role: string,
+  content: string,
+}
+
+interface conversationPayload {
+  conversation: messagePayload[]
 }
 
 interface LoginPayload {
@@ -172,7 +175,7 @@ export const userResetPassword = async (data: ResetPasswordPayload) => {
   }
 };
 
-export const sendMessageToBot = async (data: messagePayload) => {
+export const sendMessageToBot = async (data: conversationPayload) => {
   try {
     const response = await api.post('/user/talk', data);
     return response.data;
