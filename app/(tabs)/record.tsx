@@ -32,9 +32,9 @@ export default function RecordScreen() {
   const [isConnected, setIsConnected] = useState(false);
   const [recording, setRecording] = useState<boolean>(false);
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const [error, setError] = useState('');
+  const [textMessage, setTextMessage] = useState('');
   const [status, setStatus] = useState<string>('');
   const [results, setResults] = useState<string>('');
 
@@ -91,6 +91,13 @@ export default function RecordScreen() {
   const onSpeechEnd = (e: any) => {
     setStatus('speech end')
     setRecording(false);
+    const newMessage: conversationTypes = {
+      id: conversation.length + 1,
+      user: true,
+      message: textMessage
+    }
+    setConversation((prevConversation) => [...prevConversation, newMessage]);
+    onBotChat(textMessage).then()
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
@@ -100,17 +107,11 @@ export default function RecordScreen() {
 
   const onSpeechResults = (e: SpeechResultsEvent) => {
     const message = e.value?.length ? e.value.join(' ') : '...';
-    const newMessage: conversationTypes = {
-      id: conversation.length + 1,
-      user: true,
-      message
-    }
-    setConversation((prevConversation) => [...prevConversation, newMessage]);
-    onBotChat(message, e.value || []).then()
+    setTextMessage(message)
   };
 
-  async function onBotChat(message: string, messages: string[]){
-    const response = await sendMessageToBot({ message, messages }).then()
+  async function onBotChat(message: string){
+    const response = await sendMessageToBot({ message }).then()
     const newMessage: conversationTypes = {
       id: conversation.length + 1,
       user: false,
@@ -118,7 +119,6 @@ export default function RecordScreen() {
     }
     setConversation((prevConversation) => [...prevConversation, newMessage]);
     botSpeak(response.message);
-    setLoading(false);
   }
 
   const resetState = () => {
@@ -132,8 +132,10 @@ export default function RecordScreen() {
         source={bgImage}
         style={styles.image}
       >
-      <AIConfigModal />
-      <Text>status: {status}</Text>
+      <YStack>
+        <Text>status: {status}</Text>
+        <Text>message: {textMessage}</Text>
+      </YStack>
       <View style={styles.chat_box}>
         <ScrollView
           style={styles.scrollView}
@@ -187,8 +189,8 @@ export default function RecordScreen() {
       </View>
       <View style={styles.record}>
         {
-          recording || loading
-            ? <Button circular backgroundColor="$red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" />
+          recording
+            ? <Button circular backgroundColor="$red" onPress={stopRecording} icon={MicOff} size="$6" />
             : <Button circular backgroundColor="$primary" color="white" onPress={startRecording} icon={Mic} size="$6" />
         }
       </View>
