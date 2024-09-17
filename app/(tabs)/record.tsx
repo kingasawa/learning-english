@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { useEffect, useRef, useState } from 'react';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   Button,
   XStack,
@@ -59,9 +59,10 @@ export default function RecordScreen() {
   }, []);
 
   async function startRecording() {
+    setStatus('start recording');
     resetState();
     try {
-      // await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       await Voice.start('en-US');
     } catch (e) {
       console.error(e);
@@ -69,7 +70,8 @@ export default function RecordScreen() {
   }
 
   async function stopRecording() {
-    // await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    setStatus('stop recording');
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     try {
       await Voice.stop();
     } catch (e) {
@@ -184,12 +186,11 @@ export default function RecordScreen() {
         </ScrollView>
       </View>
       <View style={styles.record}>
-        <TouchableHighlight onPress={startRecording}>
-          <Text style={styles.action}>Start Recognizing</Text>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={startRecording}>
-          <Text style={styles.action}>Stop Recognizing</Text>
-        </TouchableHighlight>
+        {
+          recording || loading
+            ? <Button circular backgroundColor="$red" onPress={stopRecording} icon={loading ? <Spinner size="small" /> : MicOff} size="$6" />
+            : <Button circular backgroundColor="$primary" color="white" onPress={startRecording} icon={Mic} size="$6" />
+        }
       </View>
       </ImageBackground>
     </View>
@@ -235,11 +236,5 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingTop: 10,
     borderRadius: 15,
-  },
-  action: {
-    textAlign: 'center',
-    color: '#0000FF',
-    marginVertical: 5,
-    fontWeight: 'bold',
-  },
+  }
 });
