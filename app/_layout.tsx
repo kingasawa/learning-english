@@ -1,5 +1,4 @@
 import 'react-native-reanimated';
-import 'expo-dev-client';
 import { useCallback, useEffect, useState } from 'react';
 import { ThemeProvider } from '@react-navigation/native';
 import { TamaguiProvider } from 'tamagui';

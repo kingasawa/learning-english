@@ -60,6 +60,7 @@ export default function RecordScreen() {
 
   async function startRecording() {
     setStatus('start recording');
+    setRecording(true);
     resetState();
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -71,8 +72,16 @@ export default function RecordScreen() {
 
   async function stopRecording() {
     setStatus('stop recording');
+    setRecording(false);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     try {
+      const newMessage: conversationTypes = {
+        id: conversation.length + 1,
+        user: true,
+        message: textMessage
+      }
+      setConversation((prevConversation) => [...prevConversation, newMessage]);
+      onBotChat(textMessage).then()
       await Voice.stop();
     } catch (e) {
       console.error(e);
@@ -81,7 +90,6 @@ export default function RecordScreen() {
 
   const onSpeechStart = (e: any) => {
     setStatus('speech start');
-    setRecording(true);
   };
 
   const onSpeechRecognized = (e: SpeechRecognizedEvent) => {
@@ -90,14 +98,6 @@ export default function RecordScreen() {
 
   const onSpeechEnd = (e: any) => {
     setStatus('speech end')
-    setRecording(false);
-    const newMessage: conversationTypes = {
-      id: conversation.length + 1,
-      user: true,
-      message: textMessage
-    }
-    setConversation((prevConversation) => [...prevConversation, newMessage]);
-    onBotChat(textMessage).then()
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
