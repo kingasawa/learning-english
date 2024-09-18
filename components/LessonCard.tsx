@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { View, StyleSheet, Text, Pressable } from "react-native";
-import { H5, XStack, YStack, Image, H6, Button } from "tamagui";
+import { XStack, YStack, Image, H6, Button } from "tamagui";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Redirect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface PropsType {
   title: string,
@@ -47,10 +47,6 @@ export default function LessonCard(props: PropsType = {
           width={90}
           source={props.img}
         />
-        {/*<LinearGradient*/}
-        {/*  colors={['rgba(0,0,0,0.8)', 'transparent']}*/}
-        {/*  style={styles.background}*/}
-        {/*/>*/}
         <YStack flex={1} gap="$1">
           <H6 fontWeight="bold" color="$primary">{ props.title }</H6>
           <Text style={{ fontSize: 12 }}>
@@ -70,12 +66,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
   },
-  // background: {
-  //   borderRadius: 15,
-  //   position: 'absolute',
-  //   left: 0,
-  //   right: 0,
-  //   top: 0,
-  //   height: 100,
-  // },
 });

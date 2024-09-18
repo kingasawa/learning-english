@@ -8,7 +8,7 @@ import {
   Spinner,
   useTheme,
   Text,
-  H6, Checkbox, Label, XStack, YStack,
+  H6, Checkbox, XStack, YStack,
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";

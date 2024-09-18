@@ -159,7 +159,7 @@ export default function AccountScreen() {
       fullName: userInfo.fullName,
       birthday: userInfo.birthday,
       email: userInfo.email,
-      gender: userInfo.gender || 'Male',
+      gender: userInfo.gender || 'Nam',
       pushToken: userInfo.pushToken,
       notification: userInfo.notification,
     }
@@ -348,17 +348,17 @@ export default function AccountScreen() {
             y={0}
           >
             <YStack gap="$6">
-              <AlertDialog.Title color="$red">Logout</AlertDialog.Title>
+              <AlertDialog.Title color="$red">Thoát</AlertDialog.Title>
               <AlertDialog.Description>
-                Do you really want to logout? Please confirm.
+                Bạn có thật sự muốn thoát khỏi tài khoản này.
               </AlertDialog.Description>
               <XStack gap="$3" justifyContent="flex-end">
                 <AlertDialog.Cancel asChild>
-                  <Button backgroundColor="gray" onPress={() => setOpenConfirm(false)}>Close</Button>
+                  <Button backgroundColor="gray" onPress={() => setOpenConfirm(false)}>Không</Button>
                 </AlertDialog.Cancel>
                 <AlertDialog.Action asChild>
                   <Button backgroundColor="$red" onPress={() => handleLogOut()}>
-                    Logout
+                    Thoát
                   </Button>
                 </AlertDialog.Action>
               </XStack>

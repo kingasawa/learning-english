@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, Image, ImageBackground, Button, ScrollView } from "react-native";
-import { H3, H5, XStack, YStack } from "tamagui";
+import { View, StyleSheet, Text, ImageBackground, ScrollView } from "react-native";
+import { H3, YStack } from "tamagui";
 import LessonCard from "@/components/LessonCard";
-import * as Speech from 'expo-speech';
 import { AIConfigModal } from "@/components/AIConfigModal";
 import { useRef } from "react";
 
@@ -35,7 +34,7 @@ export default function App() {
               <LessonCard
                 title="Quán cà phê"
                 description="Bạn đang gặp bạn bè người nước ngoài và trò chuyện với họ trong 1 quán cafe"
-                context="coffee-shop"
+                context="coffeeShop"
                 img={require('@/assets/images/lesson/coffee-shop.webp')}
               />
               <LessonCard

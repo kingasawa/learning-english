@@ -99,7 +99,6 @@ export const postExampleData = async (data: any) => {
 export const getProfile = async () => {
   try {
     const response = await api.get('/auth/profile');
-    console.log('response.data', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -110,7 +109,6 @@ export const getProfile = async () => {
 export const userLogin = async (data: LoginPayload) => {
   try {
     const response = await api.post('/auth/login', data);
-    console.log('response.data', response.data);
     return response.data;
   } catch (error: any) {
     console.error('Error posting data:', error);
@@ -148,7 +146,6 @@ export const userUpdate = async (data: UpdatePayload) => {
 };
 
 export const updateNotification = async (data: UpdateNotificationPayload) => {
-  console.log('data', data);
   try {
     const response = await api.post('/auth/notification', data);
     return response.data;
@@ -162,7 +159,6 @@ export const updateNotification = async (data: UpdateNotificationPayload) => {
 };
 
 export const userResetPassword = async (data: ResetPasswordPayload) => {
-  console.log('data', data);
   try {
     const response = await api.post('/user/reset-password', data);
     return response.data;
@@ -177,7 +173,7 @@ export const userResetPassword = async (data: ResetPasswordPayload) => {
 
 export const sendMessageToBot = async (data: conversationPayload) => {
   try {
-    const response = await api.post('/user/talk', data);
+    const response = await api.post('/user/talk', { conversation: data.conversation });
     return response.data;
   } catch (error: any) {
     console.error('Error posting data:', error);

@@ -28,15 +28,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="record"
-        options={{
-          title: 'Giao tiếp',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='school' color={focused ? primaryColor : color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="account"
         options={{
           title: 'Tài khoản',
