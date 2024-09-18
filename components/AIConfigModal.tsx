@@ -115,7 +115,7 @@ function DialogInstance() {
         modal={modal}
         open={open}
         onOpenChange={setOpen}
-        snapPoints={[95, 50, 25]}
+        snapPoints={[90, 50, 25]}
         snapPointsMode={snapPointsMode}
         dismissOnSnapToBottom
         position={position}
@@ -136,11 +136,10 @@ function DialogInstance() {
           alignItems="center"
           gap="$1"
         >
-          <YStack gap="$4" alignItems="center">
+          <YStack padding={15} gap="$4" alignItems="center">
             <H5 color="$primary">Tạo tình huống giao tiếp</H5>
             <Form
               gap="$4"
-              borderWidth={1}
               borderRadius={15}
               minWidth={360}
               padding={15}
@@ -155,7 +154,6 @@ function DialogInstance() {
                     backgroundColor="white"
                     placeholder="học sinh mới"
                     color="$primary"
-                    flex={1}
                     id="me"
                     borderColor="#ccc"
                     onChangeText={(value) => handleChange("me", value)}
@@ -167,7 +165,7 @@ function DialogInstance() {
                   </Label>
                   <Input
                     backgroundColor="white"
-                    color="$primary" flex={1}
+                    color="$primary"
                     id="ai"
                     placeholder="Giáo viên dạy tiếng anh"
                     borderColor="#ccc"
@@ -212,17 +210,19 @@ function DialogInstance() {
                     borderColor="#ccc"
                     backgroundColor="white"
                     color="$primary"
+                    rows={4}
                     onChangeText={(value) => handleChange("context", value)}
                     placeholder="Trong 1 lớp học tiếng anh, giáo viên sẽ thực hành giao tiếp tiếng anh với tôi" />
                 </YStack>
+                <Button
+                  marginTop={15}
+                  backgroundColor="$primary"
+                  onPress={() => handleChangeContext()}
+                  icon={loading ? <Spinner /> : null}
+                >
+                  Bắt đầu ngay
+                </Button>
               </YStack>
-              <Button
-                backgroundColor="$primary"
-                onPress={() => handleChangeContext()}
-                icon={loading ? <Spinner /> : null}
-              >
-                Bắt đầu ngay
-              </Button>
             </Form>
           </YStack>
         </Sheet.Frame>
