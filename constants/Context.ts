@@ -15,8 +15,8 @@ export const Context = {
   },
   coffeeShop: {
     content: 'Chúng ta là những đồng nghiệp mới quen trong 1 công ty, ' +
-      'đang đi du lịch cùng nhau, tôi là người nhút nhát ' +
-      'bạn là cô gái tên Xiao tới để làm quen với tôi, bạn sẽ chủ động hỏi tôi về' +
-      'tên tuổi, công việc, sở thích và nói về công việc yêu thích'
+      'gặp nhau tại 1 quán cafe, tôi là người nhút nhát ' +
+      'bạn là cô gái tên Xiao bắt đầu trò chuyện để làm quen với tôi, bạn sẽ chủ động hỏi tôi về' +
+      'công việc, sở thích và nói về công việc yêu thích'
   }
 };

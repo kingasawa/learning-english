@@ -266,7 +266,7 @@ export default function AccountScreen() {
                       >
                         <XStack gap="$4">
                           <XStack alignItems="center" gap="$2">
-                            <RadioGroup.Item value="Male" id="radiogroup-male">
+                            <RadioGroup.Item value="Nam" id="radiogroup-male">
                               <RadioGroup.Indicator />
                             </RadioGroup.Item>
                             <Label htmlFor="radiogroup-male">
@@ -274,7 +274,7 @@ export default function AccountScreen() {
                             </Label>
                           </XStack>
                           <XStack alignItems="center" gap="$2">
-                            <RadioGroup.Item value="Female" id="radiogroup-female">
+                            <RadioGroup.Item value="Nữ" id="radiogroup-female">
                               <RadioGroup.Indicator />
                             </RadioGroup.Item>
                             <Label htmlFor="radiogroup-female">

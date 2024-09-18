@@ -79,7 +79,7 @@ export default function RecordScreen() {
         content = Context.coffeeShop.content;
         break;
       default:
-        content = ''
+        content = await AsyncStorage.getItem('content') || '';
         break;
     }
     const contextMessage: conversationTypes = {
@@ -190,6 +190,7 @@ export default function RecordScreen() {
           />
           <AlertDialog.Content
             backgroundColor="rgba(0,0,0,0.70)"
+            marginHorizontal={30}
             elevate
             key="content"
             animation={[
@@ -210,7 +211,7 @@ export default function RecordScreen() {
             <YStack gap="$6">
               <AlertDialog.Title color="$red">Thoát</AlertDialog.Title>
               <AlertDialog.Description>
-                Bạn có chắc là muốn rời khỏi cuộc trò chuyện này lại không?
+                Bạn có chắc là muốn rời khỏi cuộc trò chuyện này không?
               </AlertDialog.Description>
               <XStack gap="$3" justifyContent="flex-end">
                 <AlertDialog.Cancel asChild>
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   help: {
-    marginBottom: 15,
+    marginBottom: 10,
     padding: 10,
     borderRadius: 15,
     backgroundColor: 'rgba(205,205,205,0.30)'
@@ -350,7 +351,7 @@ const styles = StyleSheet.create({
   record: {
     flex: 1,
     marginTop: 3,
-    marginBottom: 75,
+    marginBottom: 35,
     maxHeight: 65,
     alignSelf: 'center',
     justifyContent: 'flex-end'

@@ -27,19 +27,19 @@ export default function App() {
             <YStack marginTop={15} gap="$3">
               <LessonCard
                 title="Lớp tiếng anh"
-                description="Những học sinh đang trò chuyện với giáo viên trong 1 lớp học tiếng anh"
+                description="Những học sinh đang trò chuyện với nhau trong 1 lớp học tiếng anh"
                 context="classroom"
                 img={require('@/assets/images/lesson/classroom.webp')}
               />
               <LessonCard
                 title="Quán cà phê"
-                description="Bạn đang gặp bạn bè người nước ngoài và trò chuyện với họ trong 1 quán cafe"
+                description="Bạn đang gặp đồng nghiệp mới và trò chuyện với họ trong 1 quán cafe"
                 context="coffeeShop"
                 img={require('@/assets/images/lesson/coffee-shop.webp')}
               />
               <LessonCard
                 title="Buổi cắm trại"
-                description="Bạn đang đi du lịch cùng những người bạn thân, trao đổi bằng tiếng anh với họ."
+                description="Bạn đang đi du lịch cùng những người bạn mới, trao đổi bằng tiếng anh với họ."
                 context="travel"
                 img={require('@/assets/images/lesson/travel.webp')}
               />

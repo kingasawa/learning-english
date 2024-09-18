@@ -1,17 +1,74 @@
-import { Button, Card, Input, Paragraph, Sheet, XStack, Image, H4 } from "tamagui";
+import {
+  Button,
+  Card,
+  Input,
+  Paragraph,
+  Sheet,
+  XStack,
+  Image,
+  H4,
+  Form,
+  YStack,
+  Label,
+  RadioGroup, Spinner, H5, TextArea
+} from "tamagui";
 import { useState } from "react";
 import { Replace } from "@tamagui/lucide-icons";
+import * as React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 export function AIConfigModal() {
   return <DialogInstance />
 }
 
+interface ContextType {
+  me: string,
+  ai: string,
+  gender: string,
+  context: string,
+}
+
 function DialogInstance() {
-  const spModes = ['percent', 'constant', 'fit', 'mixed'] as const
-  const [position, setPosition] = useState(0)
-  const [open, setOpen] = useState(false)
-  const [modal, setModal] = useState(true)
+  const spModes = ['percent', 'constant', 'fit', 'mixed'] as const;
+  const [position, setPosition] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [snapPointsMode, setSnapPointsMode] =
-    useState<(typeof spModes)[number]>('percent')
+    useState<(typeof spModes)[number]>('percent');
+  const [formData, setFormData] = useState<ContextType>({
+    me: '',
+    ai: '',
+    gender: 'Nam',
+    context: '',
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+  };
+
+  const handleOptionItemChange = (value: string) => {
+    setFormData({
+      ...formData,
+      gender: value,
+    });
+  };
+
+  const handleChangeContext = async() => {
+    const me = formData.me || 'bất kỳ ai';
+    const ai = formData.ai || 'bất kỳ ai';
+    const gender = formData.gender;
+    const context = formData.context || 'trong hoàn cảnh bất kì';
+    const content =
+      `Tôi là ${me}, còn bạn là ${ai} có giới tính là ${gender}, tình huống giao tiếp là ${context}`
+    await AsyncStorage.setItem('content', content);
+    setLoading(false)
+    router.replace('/record');
+  };
+
   return (
     <>
       <Card
@@ -44,8 +101,6 @@ function DialogInstance() {
         <Card.Background borderRadius={10}>
           <Image
             objectFit="fill"
-            // alignSelf="center"
-            // borderRadius={30}
             width="100%"
             source={{
               width: 300,
@@ -60,7 +115,7 @@ function DialogInstance() {
         modal={modal}
         open={open}
         onOpenChange={setOpen}
-        snapPoints={[85, 50, 25]}
+        snapPoints={[95, 50, 25]}
         snapPointsMode={snapPointsMode}
         dismissOnSnapToBottom
         position={position}
@@ -75,8 +130,101 @@ function DialogInstance() {
         />
 
         <Sheet.Handle />
-        <Sheet.Frame style={{backgroundColor: 'rgba(0,0,0,0.4)'}} padding="$4" justifyContent="center" alignItems="center" space="$5">
-          <Input width={200} />
+        <Sheet.Frame
+          style={{backgroundColor: 'rgb(221,221,221)'}}
+          paddingTop={15}
+          alignItems="center"
+          gap="$1"
+        >
+          <YStack gap="$4" alignItems="center">
+            <H5 color="$primary">Tạo tình huống giao tiếp</H5>
+            <Form
+              gap="$4"
+              borderWidth={1}
+              borderRadius={15}
+              minWidth={360}
+              padding={15}
+              backgroundColor="white"
+            >
+              <YStack gap="$2">
+                <YStack>
+                  <Label htmlFor="me" color="#444444">
+                    Nhân vật của tôi
+                  </Label>
+                  <Input
+                    backgroundColor="white"
+                    placeholder="học sinh mới"
+                    color="$primary"
+                    flex={1}
+                    id="me"
+                    borderColor="#ccc"
+                    onChangeText={(value) => handleChange("me", value)}
+                  />
+                </YStack>
+                <YStack>
+                  <Label htmlFor="ai" color="#444444">
+                    Nhân vật của AI
+                  </Label>
+                  <Input
+                    backgroundColor="white"
+                    color="$primary" flex={1}
+                    id="ai"
+                    placeholder="Giáo viên dạy tiếng anh"
+                    borderColor="#ccc"
+                    onChangeText={(value) => handleChange("ai", value)}
+                  />
+                </YStack>
+                <YStack>
+                  <Label htmlFor="gender" color="#444444">
+                    Giới tính của AI
+                  </Label>
+                  <RadioGroup
+                    aria-labelledby="Select one item"
+                    defaultValue="Nam"
+                    name="form"
+                    onValueChange={handleOptionItemChange}
+                  >
+                    <XStack gap="$4">
+                      <XStack alignItems="center" gap="$2">
+                        <RadioGroup.Item value="Nam" id="radiogroup-male">
+                          <RadioGroup.Indicator />
+                        </RadioGroup.Item>
+                        <Label htmlFor="radiogroup-male" color="#444444">
+                          Nam
+                        </Label>
+                      </XStack>
+                      <XStack alignItems="center" gap="$2">
+                        <RadioGroup.Item value="Nữ" id="radiogroup-female">
+                          <RadioGroup.Indicator />
+                        </RadioGroup.Item>
+                        <Label htmlFor="radiogroup-female" color="#444444">
+                          Nữ
+                        </Label>
+                      </XStack>
+                    </XStack>
+                  </RadioGroup>
+                </YStack>
+                <YStack>
+                  <Label htmlFor="context" color="#444444">
+                    Tình huống
+                  </Label>
+                  <TextArea
+                    borderColor="#ccc"
+                    backgroundColor="white"
+                    color="$primary"
+                    onChangeText={(value) => handleChange("context", value)}
+                    placeholder="Trong 1 lớp học tiếng anh, giáo viên sẽ thực hành giao tiếp tiếng anh với tôi" />
+                </YStack>
+              </YStack>
+              <Button
+                backgroundColor="$primary"
+                onPress={() => handleChangeContext()}
+                icon={loading ? <Spinner /> : null}
+              >
+                Bắt đầu ngay
+              </Button>
+            </Form>
+          </YStack>
         </Sheet.Frame>
       </Sheet>
     </>
