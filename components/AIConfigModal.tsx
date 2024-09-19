@@ -131,7 +131,7 @@ function DialogInstance() {
 
         <Sheet.Handle />
         <Sheet.Frame
-          style={{backgroundColor: 'rgb(221,221,221)'}}
+          style={{backgroundColor: 'rgb(243,243,243)'}}
           paddingTop={15}
           alignItems="center"
           gap="$1"
@@ -144,6 +144,13 @@ function DialogInstance() {
               minWidth={360}
               padding={15}
               backgroundColor="white"
+              shadowColor={'rgb(117,117,117)'}
+              shadowOffset={{
+                width: 0,
+                height: 1
+              }}
+              shadowOpacity={0.2}
+              shadowRadius={5}
             >
               <YStack gap="$2">
                 <YStack>
@@ -153,6 +160,7 @@ function DialogInstance() {
                   <Input
                     backgroundColor="white"
                     placeholder="học sinh mới"
+                    placeholderTextColor="#ccc"
                     color="$primary"
                     id="me"
                     borderColor="#ccc"
@@ -168,6 +176,7 @@ function DialogInstance() {
                     color="$primary"
                     id="ai"
                     placeholder="Giáo viên dạy tiếng anh"
+                    placeholderTextColor="#ccc"
                     borderColor="#ccc"
                     onChangeText={(value) => handleChange("ai", value)}
                   />
@@ -209,6 +218,7 @@ function DialogInstance() {
                   <TextArea
                     borderColor="#ccc"
                     backgroundColor="white"
+                    placeholderTextColor="#ccc"
                     color="$primary"
                     rows={4}
                     onChangeText={(value) => handleChange("context", value)}
