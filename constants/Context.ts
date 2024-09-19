@@ -1,6 +1,6 @@
 export const Context = {
   begin: {
-    content: 'hãy bắt đầu trò chuyện bằng tiếng anh, dùng từ dễ hiểu và mỗi câu không quá 15 từ'
+    content: 'hãy bắt đầu trò chuyện bằng tiếng anh, dùng câu từ dễ hiểu đơn giãn không quá 15 từ'
   },
   classroom: {
     content: 'Trong 1 lớp học tiếng anh, tôi là học sinh mới hơi rụt rè, ' +
