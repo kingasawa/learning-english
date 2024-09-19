@@ -25,6 +25,8 @@ interface ErrorType {
   email?: string,
   password?: string,
   confirm?: string,
+  privacy?: string,
+  term?: string
 }
 
 function CheckIcon() {
@@ -83,7 +85,7 @@ const Register = () => {
     if (formData.password && formData.confirm !== formData.password) {
       console.log('formData.confirm', formData.confirm);
       console.log('formData.password', formData.password);
-      newErrors.confirm = "Password not matching";
+      newErrors.confirm = "Mật khẩu không khớp";
     }
 
     if (!formData.email) {
@@ -93,15 +95,15 @@ const Register = () => {
     }
 
     if (!isAcceptTerms) {
-      showToast('warning', 'Lưu ý', 'Bạn phải đồng ý các điều khoản dịch vụ');
+      newErrors.term = "Bạn phải đồng ý các điều khoản dịch vụ"
     }
 
     if (!isAcceptPrivacy) {
-      showToast('warning', 'Lưu ý', 'Bạn phải đồng ý các chính sách và quyền riêng tư');
+      newErrors.privacy = "Bạn phải đồng ý các chính sách và quyền riêng tư"
     }
 
     if (Object.keys(newErrors).length > 0) {
-      showToast('error', 'Lỗi', Object.values(newErrors).join(', '))
+      showToast('error', 'Lỗi', Object.values(newErrors)[0])
       return false;
     } else {
       console.log("Form data:", formData);
@@ -235,7 +237,7 @@ const Register = () => {
                   onCheckedChange={() => setIsAcceptTerms(!isAcceptTerms)}
                 >
                   {
-                    isAcceptTerms ? <CheckIcon /> : <Check size={15} color="$primary"/>
+                    isAcceptTerms ? <Check size={15} color="$primary"/> : <CheckIcon />
                   }
                 </Checkbox>
                 <TermsOfService />
@@ -252,7 +254,7 @@ const Register = () => {
                   onCheckedChange={() => setIsAcceptPrivacy(!isAcceptPrivacy)}
                 >
                   {
-                    isAcceptPrivacy ? <CheckIcon /> : <Check size={15} color="$primary"/>
+                    isAcceptPrivacy ? <Check size={15} color="$primary"/> : <CheckIcon />
                   }
                 </Checkbox>
                 <PrivacyAndPolicy />
