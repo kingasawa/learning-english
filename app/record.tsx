@@ -129,8 +129,11 @@ export default function RecordScreen() {
         role: 'user',
         content: textMessage
       }
-      setConversation((prevConversation) => [...prevConversation, newMessage]);
-      onBotChat(conversation).then()
+      setConversation((prevConversation) => {
+        const updatedConversation = [...prevConversation, newMessage];
+        onBotChat(updatedConversation).then(); // Gọi onBotChat với conversation đã cập nhật
+        return updatedConversation;
+      });
       await Voice.stop();
     } catch (e) {
       console.error(e);
@@ -150,13 +153,17 @@ export default function RecordScreen() {
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
-    setStatus('speech error')
-    setError(JSON.stringify(e.error));
+    if (e.error?.code !== 'recognition_fail') {
+      setStatus('speech error')
+      setError(JSON.stringify(e.error));
+    }
   };
 
   const onSpeechResults = (e: SpeechResultsEvent) => {
     const message = e.value?.length ? e.value.join(' ') : '...';
-    setTextMessage(message)
+    if (message) {
+      setTextMessage(message)
+    }
   };
 
   async function onBotChat(conversation: conversationTypes[]){
