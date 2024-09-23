@@ -5,7 +5,11 @@ import * as Speech from 'expo-speech';
 export default function App() {
   const speak = () => {
     const thingToSay = 'What are you doing ?';
-    Speech.speak(thingToSay);
+    Speech.speak(thingToSay, {
+      language: 'en-US',
+      pitch: 0.9,
+      rate: 0.8
+    });
   };
 
   return (

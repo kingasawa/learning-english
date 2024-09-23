@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ImageBackground, TouchableWithoutFeedback, Keyboard } from "react-native";
 import {
   Button,
@@ -10,12 +10,12 @@ import {
   Text,
   H6,
   XStack,
-  YStack,
+  YStack, AlertDialog,
 } from "tamagui";
-import Toast, { ErrorToast } from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
-import { userLogin } from "@/services/apiService";
+import { userLogin, userResetPassword } from "@/services/apiService";
 import { AlertToast } from "@/components/AlertToast";
 
 interface ErrorType {
@@ -23,10 +23,13 @@ interface ErrorType {
   password?: string,
 }
 
-const bgImage = require('@/assets/images/bg4.png');
 const Login = () => {
+  const bgImage = require('@/assets/images/bg4.png');
   const theme = useTheme();
   const router = useRouter();
+  const [resetForm, setResetForm] = useState<boolean>(false);
+  const [emailReset, setEmailReset] = useState<string>('');
+  const [resetError, setResetError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -44,18 +47,16 @@ const Login = () => {
     const newErrors: ErrorType = {};
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = "Mật khẩu không được để trống";
     }
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Invalid email format";
+      newErrors.email = "Email không được để trống";
     }
 
     setLoading(false);
     if (Object.keys(newErrors).length > 0) {
-      showToast('error', 'Error', Object.values(newErrors).join(', '))
+      showToast('error', 'Lỗi', Object.values(newErrors).join(', '))
       return false;
     } else {
       return true;
@@ -68,7 +69,7 @@ const Login = () => {
       try {
         await login();
       } catch (error) {
-        showToast('error', 'Error', 'Login Failed')
+        showToast('error', 'Lỗi', 'Đăng nhập thất bại');
       } finally {
         setLoading(false);
       }
@@ -82,16 +83,12 @@ const Login = () => {
       password: formData.password
     });
     if (response?.error) {
-      showToast('error', 'Error', response.message);
+      showToast('error', 'Lỗi', response.message);
     } else {
       await AsyncStorage.setItem('userToken', response.accessToken);
       setLoading(false)
       router.replace('/')
     }
-  };
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   const showToast = (type: string, message: string, description: string) => {
@@ -102,6 +99,95 @@ const Login = () => {
     });
   }
 
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleReset = async() => {
+    if (emailReset && validateEmail(emailReset)) {
+      setLoading(true);
+      const response: any = await userResetPassword({
+        email: emailReset,
+      });
+      if (response?.error) {
+        setResetError(response.message);
+      } else {
+        setResetForm(false)
+      }
+      setLoading(false);
+      showToast('success', 'Thành công', 'Mật khẩu mới đã được gửi đến email')
+    } else {
+      setResetError('Hãy nhập vào email của bạn');
+    }
+  }
+
+  const ResetPassword = () => {
+    return (
+      <AlertDialog open={resetForm}>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay
+            key="overlay"
+            animation="quick"
+            opacity={1}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+          <AlertDialog.Content
+            margin={15}
+            backgroundColor="rgba(0,0,0,0.70)"
+            elevate
+            key="content"
+            animation={[
+              'quick',
+              {
+                opacity: {
+                  overshootClamping: true,
+                },
+              },
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            x={0}
+            scale={1}
+            opacity={1}
+            y={-100}
+          >
+            <YStack gap="$4">
+              <AlertDialog.Title color="$yellow">Cấp lại mật khẩu</AlertDialog.Title>
+              <AlertDialog.Description>
+                Một mật khẩu mới sẽ được gửi đến email đăng nhập của bạn.
+              </AlertDialog.Description>
+              <Input
+                style={styles.shadow}
+                size="$5"
+                borderRadius={10}
+                backgroundColor="white"
+                borderColor="#e3e3e3"
+                focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
+                color={theme.primary}
+                placeholder="Nhập địa chỉ email"
+                placeholderTextColor="#bbb"
+                textContentType="emailAddress"
+                onChangeText={(value) => setEmailReset(value)}
+              />
+              <Text color="$yellow" marginBottom={15}>{resetError}</Text>
+              <XStack gap="$3" justifyContent="flex-end">
+                <AlertDialog.Cancel asChild>
+                  <Button backgroundColor="gray" onPress={() => setResetForm(false)}>Đóng</Button>
+                </AlertDialog.Cancel>
+                <AlertDialog.Action asChild>
+                  <Button disabled={!emailReset} backgroundColor="$yellow" onPress={() => handleReset()}>
+                    Gửi đi
+                  </Button>
+                </AlertDialog.Action>
+              </XStack>
+            </YStack>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog>
+    )
+  }
+
   return (
       <ImageBackground
         source={bgImage}
@@ -109,14 +195,15 @@ const Login = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.container}>
+            <ResetPassword />
             <AlertToast />
             <Form
               style={styles.form}
-              gap="$4"
+              gap="$2"
               onSubmit={() => handleSubmit() }
             >
-              <H2 style={styles.shadow} color="$primary" alignSelf="center" marginBottom={30}>Member Login</H2>
-              <H6 alignSelf="center" marginBottom={5} color="$primary">Login to continue</H6>
+              <H2 style={styles.shadow} color="$primary" alignSelf="center" marginBottom={20}>Đăng nhập</H2>
+              <H6 alignSelf="center" marginBottom={5} color="$primary">Đăng nhập để sử dụng</H6>
               <Input
                 style={styles.shadow}
                 size="$5"
@@ -125,7 +212,7 @@ const Login = () => {
                 borderColor="#e3e3e3"
                 focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
                 color={theme.primary}
-                placeholder="Enter your email address"
+                placeholder="Nhập địa chỉ email"
                 placeholderTextColor="#bbb"
                 textContentType="emailAddress"
                 onChangeText={(value) => handleChange("email", value)}
@@ -138,7 +225,7 @@ const Login = () => {
                 borderColor="#e3e3e3"
                 focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
                 color={theme.primary}
-                placeholder="Enter your password"
+                placeholder="Nhập mật khẩu"
                 placeholderTextColor="#bbb"
                 secureTextEntry={true}
                 onChangeText={(value) => handleChange("password", value)}
@@ -153,15 +240,15 @@ const Login = () => {
                   icon={loading ? <Spinner /> : null}
                   disabled={loading}
                 >
-                  Login
+                  Đăng nhập
                 </Button>
               </Form.Trigger>
             </Form>
             <XStack justifyContent="center">
               <YStack gap="$6" justifyContent="center">
                 <YStack gap="$3" alignItems="center">
-                  <Text color="$secondary"><Link href={"/register"}>Forgot your password?</Link></Text>
-                  <Text color="$secondary"><Link href={"/register"}>Don't have an account?</Link></Text>
+                  <Text color="$secondary" onPress={() => setResetForm(true)}>Bạn quên mật khẩu?</Text>
+                  <Text color="$secondary"><Link href={"/register"}>Bạn chưa có tài khoản?</Link></Text>
                 </YStack>
               </YStack>
             </XStack>

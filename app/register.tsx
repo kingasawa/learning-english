@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Check } from '@tamagui/lucide-icons'
 import { View, StyleSheet, ImageBackground, TouchableWithoutFeedback, Keyboard } from "react-native";
 import {
   Button,
@@ -7,7 +8,7 @@ import {
   Spinner,
   useTheme,
   Text,
-  H6,
+  H6, Checkbox, XStack, YStack,
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
@@ -16,21 +17,29 @@ import { AlertToast } from "@/components/AlertToast";
 import Toast from "react-native-toast-message";
 import * as Notifications from 'expo-notifications';
 import Constants from "expo-constants";
+import { TermsOfService } from "@/components/TermsOfService"
+import { PrivacyAndPolicy } from "@/components/PrivacyAndPolicy"
 
 interface ErrorType {
   fullName?: string,
   email?: string,
   password?: string,
   confirm?: string,
+  privacy?: string,
+  term?: string
 }
 
-const bgImage = require('@/assets/images/bg4.png');
+function CheckIcon() {
+  return null;
+}
 
 const Register = () => {
+  const bgImage = require('@/assets/images/bg4.png');
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [pushToken, setPushToken] = useState<string>('');
+  const [isAcceptTerms, setIsAcceptTerms] = useState(false);
+  const [isAcceptPrivacy, setIsAcceptPrivacy] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -66,27 +75,35 @@ const Register = () => {
     const newErrors: ErrorType = {};
 
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = "Mật khẩu không được để trống";
     }
 
     if (!formData.fullName) {
-      newErrors.fullName = "FullName is required";
+      newErrors.fullName = "Hãy nhập tên của bạn";
     }
 
     if (formData.password && formData.confirm !== formData.password) {
       console.log('formData.confirm', formData.confirm);
       console.log('formData.password', formData.password);
-      newErrors.confirm = "Password not matching";
+      newErrors.confirm = "Mật khẩu không khớp";
     }
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email không được để trống";
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = "Invalid email format";
+      newErrors.email = "Không đúng định dạng email";
+    }
+
+    if (!isAcceptTerms) {
+      newErrors.term = "Bạn phải đồng ý các điều khoản dịch vụ"
+    }
+
+    if (!isAcceptPrivacy) {
+      newErrors.privacy = "Bạn phải đồng ý các chính sách và quyền riêng tư"
     }
 
     if (Object.keys(newErrors).length > 0) {
-      showToast('error', 'Error', Object.values(newErrors).join(', '))
+      showToast('error', 'Lỗi', Object.values(newErrors)[0])
       return false;
     } else {
       console.log("Form data:", formData);
@@ -100,7 +117,7 @@ const Register = () => {
       try {
         await register()
       } catch (error) {
-        showToast('error', 'Error', 'Register failed')
+        showToast('error', 'Lỗi', 'Đăng ký thất bại')
         console.error('Register failed:', error);
       } finally {
         setLoading(false);
@@ -112,7 +129,6 @@ const Register = () => {
 
   const register = async() => {
     const token = await handleAddNotifications();
-    console.log('token', token);
     const response: any = await userRegister({
       fullName: formData.fullName,
       email: formData.email,
@@ -121,7 +137,7 @@ const Register = () => {
       notification: token.length > 0
     });
     if (response?.error) {
-      showToast('error', 'Error', response.message);
+      showToast('error', 'Lỗi', response.message);
     } else {
       await AsyncStorage.setItem('userToken', response.user?.accessToken);
       router.replace('/')
@@ -150,11 +166,11 @@ const Register = () => {
           <AlertToast />
           <Form
             style={styles.form}
-            gap="$4"
+            gap="$2"
             onSubmit={() => handleSubmit() }
           >
-            <H2 style={styles.shadow} color="$primary" alignSelf="center" marginBottom={30}>Member Register</H2>
-            <H6 alignSelf="center" marginBottom={5} color="$primary">Create a new account</H6>
+            <H2 style={styles.shadow} color="$primary" alignSelf="center" marginBottom={20}>Đăng ký</H2>
+            <H6 alignSelf="center" marginBottom={5} color="$primary">Tạo một tài khoản</H6>
             <Input
               style={styles.shadow}
               size="$5"
@@ -163,7 +179,7 @@ const Register = () => {
               borderColor="#e3e3e3"
               focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
               color={theme.primary}
-              placeholder="Enter your full name"
+              placeholder="Nhập vào tên của bạn"
               placeholderTextColor="#bbb"
               textContentType="emailAddress"
               onChangeText={(value) => handleChange("fullName", value)}
@@ -176,7 +192,7 @@ const Register = () => {
               borderColor="#e3e3e3"
               focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
               color={theme.primary}
-              placeholder="Enter your email address"
+              placeholder="Nhập địa chỉ email"
               placeholderTextColor="#bbb"
               textContentType="emailAddress"
               onChangeText={(value) => handleChange("email", value)}
@@ -189,7 +205,7 @@ const Register = () => {
               borderColor="#e3e3e3"
               focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
               color={theme.primary}
-              placeholder="Enter your password"
+              placeholder="Nhập mật khẩu"
               placeholderTextColor="#bbb"
               secureTextEntry={true}
               onChangeText={(value) => handleChange("password", value)}
@@ -202,15 +218,52 @@ const Register = () => {
               borderColor="#e3e3e3"
               focusStyle={{ borderColor: '$primary', borderWidth: 2 }}
               color={theme.primary}
-              placeholder="Confirm your password"
+              placeholder="Xác nhận mật khẩu"
               placeholderTextColor="#bbb"
               secureTextEntry={true}
               onChangeText={(value) => handleChange("confirm", value)}
             />
+            <YStack gap="$2">
+              <Text fontWeight="bold" marginTop={5}>Tôi đồng ý với:</Text>
+              <XStack marginLeft={10} alignItems="center" gap="$2">
+                <Checkbox
+                  backgroundColor="white"
+                  borderColor="gray"
+                  pressStyle={{
+                    backgroundColor: 'white'
+                  }}
+                  size="$5"
+                  checked={isAcceptTerms}
+                  onCheckedChange={() => setIsAcceptTerms(!isAcceptTerms)}
+                >
+                  {
+                    isAcceptTerms ? <Check size={15} color="$primary"/> : <CheckIcon />
+                  }
+                </Checkbox>
+                <TermsOfService />
+              </XStack>
+              <XStack marginLeft={10} marginTop={-20} alignItems="center" gap="$2">
+                <Checkbox
+                  backgroundColor="white"
+                  borderColor="gray"
+                  pressStyle={{
+                    backgroundColor: 'white'
+                  }}
+                  size="$5"
+                  checked={isAcceptPrivacy}
+                  onCheckedChange={() => setIsAcceptPrivacy(!isAcceptPrivacy)}
+                >
+                  {
+                    isAcceptPrivacy ? <Check size={15} color="$primary"/> : <CheckIcon />
+                  }
+                </Checkbox>
+                <PrivacyAndPolicy />
+              </XStack>
+            </YStack>
             <Form.Trigger asChild>
               <Button
                 style={styles.shadow}
-                marginTop={30}
+                marginTop={10}
                 backgroundColor="$primary"
                 borderRadius={30}
                 size="$5"
@@ -218,12 +271,12 @@ const Register = () => {
                 disabled={loading}
                 disabledStyle={{ backgroundColor: 'gray' }}
               >
-                Register
+                Đăng ký
               </Button>
             </Form.Trigger>
           </Form>
-          <View style={{ flex: 1, alignSelf: 'center', marginBottom: 50 }}>
-            <Text marginTop={20} marginBottom={10} color="$secondary"><Link href={"/login"}>Already an account? Login now</Link></Text>
+          <View style={{ alignSelf: 'center', marginBottom: 50 }}>
+            <Text marginTop={20} marginBottom={10} color="$secondary"><Link href={"/login"}>Bạn đã có tài khoản? Đăng nhập</Link></Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -244,7 +297,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   form: {
-    paddingTop: 50,
+    paddingTop: 80,
     paddingBottom: 10,
     backgroundColor: 'none',
   },

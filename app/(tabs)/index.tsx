@@ -1,18 +1,13 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, Image, ImageBackground } from "react-native";
-import { Button, H5, XStack, YStack } from "tamagui";
-import * as Speech from 'expo-speech';
-import NamedStyles = StyleSheet.NamedStyles;
-const bgImage = require('@/assets/images/bg4.png');
+import { View, StyleSheet, Text, ImageBackground, ScrollView } from "react-native";
+import { H3, YStack } from "tamagui";
+import LessonCard from "@/components/LessonCard";
+import { AIConfigModal } from "@/components/AIConfigModal";
+import { useRef } from "react";
 
 export default function App() {
-
-  const speak = () => {
-    const thingToSay = 'Hi, How do you do ?';
-    Speech.speak(thingToSay, {
-      language: 'en-US',
-    });
-  };
+  const bgImage = require('@/assets/images/bg4.png');
+  const scrollViewRef = useRef<ScrollView>(null);
 
   return (
       <ImageBackground
@@ -20,31 +15,37 @@ export default function App() {
         style={styles.imageBackground}
       >
         <View style={styles.container}>
-          <XStack
-            alignItems="center"
-            gap="$4"
-            backgroundColor="$yellow"
-            padding={15}
-            paddingTop={80}
-            shadowColor={'rgb(132,66,185)'}
-            shadowOffset={{
-              width: 0,
-              height: 1
-            }}
-            shadowOpacity={0.3}
-            shadowRadius={3}
+          <ScrollView
+            style={styles.scrollView}
+            onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
+            ref={scrollViewRef}
           >
-            <Image
-              source={require('@/assets/images/img.png')}
-              style={styles.image}
-            />
-            <YStack flex={1}>
-              <H5>Vì cộng đồng</H5>
-              <Text>
-                Ứng dụng được tạo ra cho mục đích chia sẻ cộng đồng, vì thế ứng dụng sẽ không thu bất cứ khoản phí nào, cũng như sẽ không xuất hiện quảng cáo trên ứng dụng.
-              </Text>
+          <AIConfigModal />
+          <YStack gap="$1" marginTop={15}>
+            <H3 alignSelf="center" color="$primary">Tình huống giao tiếp</H3>
+            <Text style={{ textAlign: 'center' }}>Chọn 1 tình huống để thực hành giao tiếp</Text>
+            <YStack marginTop={15} gap="$3">
+              <LessonCard
+                title="Lớp tiếng anh"
+                description="Những học sinh đang trò chuyện với nhau trong 1 lớp học tiếng anh"
+                context="classroom"
+                img={require('@/assets/images/lesson/classroom.webp')}
+              />
+              <LessonCard
+                title="Quán cà phê"
+                description="Bạn đang gặp đồng nghiệp mới và trò chuyện với họ trong 1 quán cafe"
+                context="coffeeShop"
+                img={require('@/assets/images/lesson/coffee-shop.webp')}
+              />
+              <LessonCard
+                title="Buổi cắm trại"
+                description="Bạn đang đi du lịch cùng những người bạn mới, trao đổi bằng tiếng anh với họ."
+                context="travel"
+                img={require('@/assets/images/lesson/travel.webp')}
+              />
             </YStack>
-          </XStack>
+          </YStack>
+          </ScrollView>
         </View>
       </ImageBackground>
   );
@@ -53,6 +54,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 15,
+    paddingTop: 60,
+    justifyContent: 'flex-start'
   },
   imageBackground: {
     flex: 1,
@@ -64,5 +68,10 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80
+  },
+  scrollView: {
+    paddingTop: 10,
+    borderRadius: 15,
+    marginBottom: 80
   },
 });

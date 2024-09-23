@@ -50,17 +50,17 @@ const toastConfig = {
     />
   ),
   error: (props: any) => (
-    <ErrorToast
+    <BaseToast
       {...props}
-      style={{ borderLeftColor: '#a10303', backgroundColor: '#feece9' }}
-      contentContainerStyle={{ paddingHorizontal: 15 }}
+      style={{ borderLeftColor: '#a10303', backgroundColor: '#feece9', height: 'auto', padding: 10 }}
+      text2NumberOfLines={2}
       text1Style={{
         fontSize: 17,
         color: '#a10303'
       }}
       text2Style={{
         fontSize: 15,
-        color: '#b20303'
+        color: '#b20303',
       }}
     />
   ),
@@ -75,7 +75,7 @@ const toastConfig = {
       }}
       text2Style={{
         fontSize: 15,
-        color: '#ee9005'
+        color: '#ee9005',
       }}
     />
   ),

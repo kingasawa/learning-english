@@ -5,6 +5,6 @@ import { io } from 'socket.io-client';
 // });
 
 
-export const socket = io(process.env.EXPO_PUBLIC_BACKEND_URL, {
+export const socket = io("https://simplecode.online", {
   transports: ['websocket']
 });

@@ -27,14 +27,15 @@ import {
   CalendarDays,
   LogOut,
   Mail,
-  FilePen, BellRing, PenLine
-} from "@tamagui/lucide-icons"
+  BellRing,
+  PenLine
+} from "@tamagui/lucide-icons";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { getProfile, userUpdate, updateNotification } from "@/services/apiService";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AlertToast} from "@/components/AlertToast";
+import { AlertToast } from "@/components/AlertToast";
 import Toast from "react-native-toast-message";
 import * as Notifications from 'expo-notifications';
 import Constants from "expo-constants";
@@ -56,7 +57,6 @@ export default function AccountScreen() {
   const router = useRouter();
   const [account, setAccount] = useState<any>({});
   const [notificationStatus, setNotificationStatus] = useState<boolean>(true);
-  const [pushToken, setPushToken] = useState<string>('');
   const [loadingScreen, setLoadingScreen] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -93,13 +93,13 @@ export default function AccountScreen() {
       }
     }
     try {
-      console.log('data', data);
-      await updateNotification(data);
+      if (data.pushToken) {
+        await updateNotification(data);
+        getUserInfo().then();
+        showToast('success', 'Enabled', 'Bạn đã bật thông báo');
+      }
     } catch (err) {
       showToast('error', 'Error', 'Updated notification failed');
-    } finally {
-      getUserInfo().then();
-      showToast('success', 'Enabled', 'You were enabled notification successfully');
     }
   }
 
@@ -112,7 +112,7 @@ export default function AccountScreen() {
       showToast('error', 'Error', 'Updated notification failed');
     } finally {
       getUserInfo().then();
-      showToast('warning', 'Disabled', 'You were disabled notification');
+      showToast('warning', 'Disabled', 'Bạn đã tắt thông báo');
     }
   }
 
@@ -146,7 +146,7 @@ export default function AccountScreen() {
         showToast('error', 'Error', response.message);
       } else {
         getUserInfo().then();
-        showToast('success', 'Updated', 'Your personal info was updated successfully');
+        showToast('success', 'Updated', 'Cập nhật thông tin cá nhân thành công');
       }
       setOpen(false);
       setLoading(false)
@@ -159,7 +159,7 @@ export default function AccountScreen() {
       fullName: userInfo.fullName,
       birthday: userInfo.birthday,
       email: userInfo.email,
-      gender: userInfo.gender || 'Male',
+      gender: userInfo.gender || 'Nam',
       pushToken: userInfo.pushToken,
       notification: userInfo.notification,
     }
@@ -177,7 +177,7 @@ export default function AccountScreen() {
     const isValidDate = moment(formData.birthday, 'DD/MM/YYYY', true).isValid();
     if (!isValidDate) {
       setOpen(false);
-      showToast('error', 'Error', 'Invalid date format (DD/MM/YYYY)');
+      showToast('error', 'Error', 'Sai định dạng (DD/MM/YYYY)');
     }
     return isValidDate;
   }
@@ -186,7 +186,7 @@ export default function AccountScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" />
-        <Text>Fetching account data...</Text>
+        <Text>Đang tải thông tin cá nhân...</Text>
       </View>
     );
   }
@@ -223,15 +223,15 @@ export default function AccountScreen() {
               y={-100}
             >
               <YStack gap="$2">
-                <AlertDialog.Title color="$yellow">Edit Info</AlertDialog.Title>
+                <AlertDialog.Title color="$yellow">Sửa thông tin</AlertDialog.Title>
                 <AlertDialog.Description color="$yellow">
-                  Please correct your information.
+                  Điền thông tin cá nhân.
                 </AlertDialog.Description>
                 <Form gap="$4">
                   <YStack padding="$3" minWidth={300} gap="$2">
                     <XStack alignItems="center" gap="$4">
-                      <Label width={60} htmlFor="fullName">
-                        Name
+                      <Label width={75} htmlFor="fullName">
+                        Họ tên
                       </Label>
                       <Input
                         backgroundColor="white"
@@ -243,8 +243,8 @@ export default function AccountScreen() {
                       />
                     </XStack>
                     <XStack alignItems="center" gap="$4">
-                      <Label width={60} htmlFor="birthday">
-                        Birthday
+                      <Label width={75} htmlFor="birthday">
+                        Ngày sinh
                       </Label>
                       <Input
                         backgroundColor="white"
@@ -255,8 +255,8 @@ export default function AccountScreen() {
                       />
                     </XStack>
                     <XStack alignItems="center" gap="$4">
-                      <Label width={65} htmlFor="birthday">
-                        Gender
+                      <Label width={75} htmlFor="birthday">
+                        Giới tính
                       </Label>
                       <RadioGroup
                         aria-labelledby="Select one item"
@@ -266,19 +266,19 @@ export default function AccountScreen() {
                       >
                         <XStack gap="$4">
                           <XStack alignItems="center" gap="$2">
-                            <RadioGroup.Item value="Male" id="radiogroup-male">
+                            <RadioGroup.Item value="Nam" id="radiogroup-male">
                               <RadioGroup.Indicator />
                             </RadioGroup.Item>
                             <Label htmlFor="radiogroup-male">
-                              Male
+                              Nam
                             </Label>
                           </XStack>
                           <XStack alignItems="center" gap="$2">
-                            <RadioGroup.Item value="Female" id="radiogroup-female">
+                            <RadioGroup.Item value="Nữ" id="radiogroup-female">
                               <RadioGroup.Indicator />
                             </RadioGroup.Item>
                             <Label htmlFor="radiogroup-female">
-                              Female
+                              Nữ
                             </Label>
                           </XStack>
                         </XStack>
@@ -289,7 +289,7 @@ export default function AccountScreen() {
                 </Form>
                 <XStack gap="$3" justifyContent="flex-end">
                   <AlertDialog.Cancel asChild>
-                    <Button backgroundColor="gray" onPress={() => setOpen(false)}>Cancel</Button>
+                    <Button backgroundColor="gray" onPress={() => setOpen(false)}>Đóng</Button>
                   </AlertDialog.Cancel>
                   <AlertDialog.Action asChild>
                     <Button
@@ -297,7 +297,7 @@ export default function AccountScreen() {
                       onPress={() => updateUserInfo()}
                       icon={loading ? <Spinner /> : null}
                     >
-                      Update
+                      Cập nhật
                     </Button>
                   </AlertDialog.Action>
                 </XStack>
@@ -348,17 +348,17 @@ export default function AccountScreen() {
             y={0}
           >
             <YStack gap="$6">
-              <AlertDialog.Title color="$red">Logout</AlertDialog.Title>
+              <AlertDialog.Title color="$red">Thoát</AlertDialog.Title>
               <AlertDialog.Description>
-                Do you really want to logout? Please confirm.
+                Bạn có thật sự muốn thoát khỏi tài khoản này.
               </AlertDialog.Description>
               <XStack gap="$3" justifyContent="flex-end">
                 <AlertDialog.Cancel asChild>
-                  <Button backgroundColor="gray" onPress={() => setOpenConfirm(false)}>Close</Button>
+                  <Button backgroundColor="gray" onPress={() => setOpenConfirm(false)}>Không</Button>
                 </AlertDialog.Cancel>
                 <AlertDialog.Action asChild>
                   <Button backgroundColor="$red" onPress={() => handleLogOut()}>
-                    Logout
+                    Thoát
                   </Button>
                 </AlertDialog.Action>
               </XStack>
@@ -384,7 +384,7 @@ export default function AccountScreen() {
               source={require('@/assets/images/account-circle.png')}
               style={styles.image}
             />
-            <XStack gap="$2" justifyContent="center">
+            <XStack gap="$2" alignItems="center">
               <H3 color="$primary" alignSelf="center">{account.fullName}</H3>
               <Button unstyled color="$red" icon={PenLine} onPress={() => setOpen(true)} />
             </XStack>
@@ -403,7 +403,7 @@ export default function AccountScreen() {
                 <ListItem
                   backgroundColor="$transparent"
                   title={account.gender || 'No data'}
-                  subTitle="Gender"
+                  subTitle="Giới tính"
                   icon={Blend}
                 />
               </YGroup.Item>
@@ -411,15 +411,15 @@ export default function AccountScreen() {
                 <ListItem
                   backgroundColor="$transparent"
                   title={account.birthday || 'No data'}
-                  subTitle="Age"
+                  subTitle="Ngày sinh"
                   icon={CalendarDays}
                 />
               </YGroup.Item>
               <YGroup.Item>
                 <ListItem
                   backgroundColor="$transparent"
-                  title="Enable Notification"
-                  subTitle="Notification"
+                  title="Bật thông báo"
+                  subTitle="Thông báo"
                   icon={BellRing}
                   iconAfter={() => (
                     <Switch
@@ -444,7 +444,7 @@ export default function AccountScreen() {
               icon={<LogOut />}
               onPress={() => setOpenConfirm(true)}
             >
-              Logout
+              Thoát
             </Button>
           </YStack>
         </YStack>
@@ -455,9 +455,10 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   image: {
-    marginTop: 80,
+    marginTop: 120,
     width: 120,
-    height: 120
+    height: 120,
+    alignSelf: 'center'
   },
   imageBackground: {
     flex: 1,
