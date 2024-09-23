@@ -16,6 +16,7 @@ import * as Haptics from 'expo-haptics';
 import { Mic, MicOff, Volume2, X, Info } from "@tamagui/lucide-icons"
 import { sendMessageToBot } from "@/services/apiService"
 import { router, useFocusEffect } from "expo-router";
+import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context } from "@/constants/Context"
 import * as React from "react";
@@ -54,6 +55,7 @@ export default function RecordScreen() {
   );
 
   useEffect(() => {
+    Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).then();
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechEnd = onSpeechEnd;
@@ -131,7 +133,7 @@ export default function RecordScreen() {
       }
       setConversation((prevConversation) => {
         const updatedConversation = [...prevConversation, newMessage];
-        onBotChat(updatedConversation).then(); // Gọi onBotChat với conversation đã cập nhật
+        onBotChat(updatedConversation).then();
         return updatedConversation;
       });
       await Voice.stop();

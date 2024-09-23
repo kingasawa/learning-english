@@ -27,15 +27,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="account"
-        options={{
-          title: 'Tài khoản',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name='account-circle' color={focused ? primaryColor : color} />
-          ),
-        }}
-      />
     </Tabs>
   );
 }

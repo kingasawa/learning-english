@@ -1,5 +1,5 @@
 import 'react-native-reanimated';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { ThemeProvider } from '@react-navigation/native';
 import { TamaguiProvider } from 'tamagui';
 import { tamaguiConfig } from "@/tamagui.config";
@@ -11,9 +11,8 @@ import {
   ImageBackground
 } from "react-native";
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import NamedStyles = StyleSheet.NamedStyles;
 
 SplashScreen.preventAutoHideAsync().then();
@@ -36,41 +35,13 @@ export default function RootLayout() {
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isReady, setIsReady] = useState<boolean>(false);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    async function checkLoginStatus() {
-      const token = await AsyncStorage.getItem('userToken');
-      if (token) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
+  const onLayoutRootView = useCallback(async () => {
+    if (!loaded) {
+      await SplashScreen.hideAsync();
     }
-
-    async function prepare() {
-      await checkLoginStatus();
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      if (loaded) {
-        setIsReady(true);
-      }
-    }
-    prepare().then();
   }, [loaded]);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (isReady) {
-      await SplashScreen.hideAsync();
-      if (!isLoggedIn) {
-        router.replace('/register');
-      }
-    }
-  }, [isReady, isLoggedIn]);
-
-  if (!isReady) {
+  if (loaded) {
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -88,8 +59,6 @@ export default function RootLayout() {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="record" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="register" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
             <Stack.Screen name="+not-found" options={{ headerShown: false }} />
           </Stack>
         </View>
