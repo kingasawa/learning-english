@@ -72,7 +72,7 @@ function DialogInstance() {
   return (
     <>
       <Card
-        marginTop={15}
+        marginTop={5}
         size="$4"
         backgroundColor="$primary"
         shadowColor="gray"

@@ -36,12 +36,14 @@ export default function RootLayout() {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (!loaded) {
-      await SplashScreen.hideAsync();
+    if (loaded) {
+      setTimeout(async() => {
+        await SplashScreen.hideAsync();
+      }, 2000)
     }
   }, [loaded]);
 
-  if (loaded) {
+  if (!loaded) {
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -57,7 +59,7 @@ export default function RootLayout() {
       <ThemeProvider value={DefaultTheme}>
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="record" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
             <Stack.Screen name="+not-found" options={{ headerShown: false }} />
           </Stack>

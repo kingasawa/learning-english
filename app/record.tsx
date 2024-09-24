@@ -21,6 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context } from "@/constants/Context";
 import * as Permissions from "expo-permissions";
 import * as React from "react";
+import {MaterialIcons} from "@expo/vector-icons";
 
 export default function RecordScreen() {
   interface conversationTypes {
@@ -32,6 +33,7 @@ export default function RecordScreen() {
   const [recording, setRecording] = useState<boolean>(false);
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
   const [microphonePermission, setMicrophonePermission] = useState<boolean>(false);
+  const [openHelp, setOpenHelp] = useState<boolean>(false);
 
   const [error, setError] = useState<string>('');
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
@@ -57,42 +59,7 @@ export default function RecordScreen() {
   );
 
   useEffect(() => {
-    async function checkMicrophonePermission() {
-      const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-      if (status === 'granted') {
-        setMicrophonePermission(true);
-      } else {
-        setMicrophonePermission(false);
-        Alert.alert(
-          'Quyền truy cập micro bị từ chối',
-          'Ứng dụng cần truy cập micro để nhận diện giọng nói. Hãy vào cài đặt để cấp quyền.',
-          [
-            { text: 'Hủy', style: 'cancel' },
-            { text: 'Đi đến cài đặt', onPress: () => Linking.openSettings() }
-          ]
-        );
-      }
-    }
-
-    // Kiểm tra trạng thái nhận diện giọng nói
-    async function checkVoiceRecognition() {
-      try {
-        await Voice.isAvailable();
-      } catch (e) {
-        Alert.alert(
-          'Quyền truy cập micro bị từ chối',
-          'Ứng dụng cần truy cập micro để nhận diện giọng nói. Hãy vào cài đặt để cấp quyền.',
-          [
-            { text: 'Hủy', style: 'cancel' },
-            { text: 'Đi đến cài đặt', onPress: () => Linking.openSettings() }
-          ]
-        );
-      }
-    }
-
-    checkMicrophonePermission().then();
-    checkVoiceRecognition().then();
-
+    checkPerMission().then();
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).then();
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
@@ -105,6 +72,24 @@ export default function RecordScreen() {
     };
   }, []);
 
+  async function checkPerMission() {
+    const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+    if (status === 'granted') {
+      setMicrophonePermission(true);
+    } else {
+      setMicrophonePermission(false);
+      // Alert.alert(
+      //   'Quyền truy cập micro bị từ chối',
+      //   'Ứng dụng cần truy cập micro để nhận diện giọng nói. Hãy vào cài đặt để cấp quyền.',
+      //   [
+      //     { text: 'Hủy', style: 'cancel' },
+      //     { text: 'Đi đến cài đặt', onPress: () => Linking.openSettings() }
+      //   ]
+      // );
+    }
+
+    const voiceAvailable = await Voice.isAvailable();
+  }
 
   async function startLearning() {
     const context: string = await AsyncStorage.getItem('context') || '';
@@ -223,6 +208,76 @@ export default function RecordScreen() {
 
   const handleQuit = async() => {
     router.replace('/')
+  }
+
+  const HelpDialog = () => {
+    return (
+      <AlertDialog open={openHelp}>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay
+            key="overlay"
+            animation="quick"
+            opacity={1}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+          <AlertDialog.Content
+            backgroundColor="rgba(0,0,0,0.70)"
+            elevate
+            key="content"
+            animation={[
+              'quick',
+              {
+                opacity: {
+                  overshootClamping: true,
+                },
+              },
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            x={0}
+            scale={1}
+            opacity={1}
+            y={0}
+          >
+            <YStack gap="$4">
+              <AlertDialog.Title color="$yellow">Hướng dẫn</AlertDialog.Title>
+              <AlertDialog.Description>
+                <Text style={{ color: '#ccc' }}>Để sử dụng vui lòng bật Microphone và Speech Recognition</Text>
+              </AlertDialog.Description>
+              <YStack gap="$4">
+                <YStack>
+                  <Text style={{ color: 'white' }}>Vào Setting - Search - Microphone</Text>
+                  <XStack gap="$4" alignItems="center">
+                    <Text style={{ color: 'white' }}>
+                      Bot Talk
+                    </Text>
+                    <MaterialIcons name="toggle-on" color="green" size={40}/>
+                  </XStack>
+                </YStack>
+                <YStack>
+                  <Text style={{ color: 'white' }}>Vào Setting - Search - Speech Recognition</Text>
+                  <XStack gap="$4" alignItems="center">
+                    <Text style={{ color: 'white' }}>
+                      Bot Talk
+                    </Text>
+                    <MaterialIcons name="toggle-on" color="green" size={40}/>
+                  </XStack>
+                </YStack>
+              </YStack>
+              <XStack gap="$3" justifyContent="flex-end">
+                <AlertDialog.Cancel asChild>
+                  <Button backgroundColor="$yellow" onPress={() => setOpenHelp(false)}>Đã hiểu</Button>
+                </AlertDialog.Cancel>
+                <AlertDialog.Action>
+                  <Button backgroundColor="$yellow" onPress={() => Linking.openSettings()}>Setting</Button>
+                </AlertDialog.Action>
+              </XStack>
+            </YStack>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog>
+    )
   }
 
   const QuitConfirmModal = () => {
