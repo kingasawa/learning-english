@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, ScrollView, StyleSheet, Text, View, Alert, Linking } from "react-native";
 import {
   Button,
   XStack,
@@ -10,15 +10,16 @@ import Voice, {
   SpeechRecognizedEvent,
   SpeechResultsEvent,
   SpeechErrorEvent,
-} from '@react-native-voice/voice';
-import * as Speech from 'expo-speech';
-import * as Haptics from 'expo-haptics';
+} from "@react-native-voice/voice";
+import * as Speech from "expo-speech";
+import * as Haptics from "expo-haptics";
 import { Mic, MicOff, Volume2, X, Info } from "@tamagui/lucide-icons"
 import { sendMessageToBot } from "@/services/apiService"
 import { router, useFocusEffect } from "expo-router";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Context } from "@/constants/Context"
+import { Context } from "@/constants/Context";
+import * as Permissions from "expo-permissions";
 import * as React from "react";
 
 export default function RecordScreen() {
@@ -30,6 +31,7 @@ export default function RecordScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const [recording, setRecording] = useState<boolean>(false);
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
+  const [microphonePermission, setMicrophonePermission] = useState<boolean>(false);
 
   const [error, setError] = useState<string>('');
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
@@ -55,6 +57,42 @@ export default function RecordScreen() {
   );
 
   useEffect(() => {
+    async function checkMicrophonePermission() {
+      const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+      if (status === 'granted') {
+        setMicrophonePermission(true);
+      } else {
+        setMicrophonePermission(false);
+        Alert.alert(
+          'Quyền truy cập micro bị từ chối',
+          'Ứng dụng cần truy cập micro để nhận diện giọng nói. Hãy vào cài đặt để cấp quyền.',
+          [
+            { text: 'Hủy', style: 'cancel' },
+            { text: 'Đi đến cài đặt', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    }
+
+    // Kiểm tra trạng thái nhận diện giọng nói
+    async function checkVoiceRecognition() {
+      try {
+        await Voice.isAvailable();
+      } catch (e) {
+        Alert.alert(
+          'Quyền truy cập micro bị từ chối',
+          'Ứng dụng cần truy cập micro để nhận diện giọng nói. Hãy vào cài đặt để cấp quyền.',
+          [
+            { text: 'Hủy', style: 'cancel' },
+            { text: 'Đi đến cài đặt', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    }
+
+    checkMicrophonePermission().then();
+    checkVoiceRecognition().then();
+
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).then();
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
@@ -66,6 +104,7 @@ export default function RecordScreen() {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
+
 
   async function startLearning() {
     const context: string = await AsyncStorage.getItem('context') || '';
