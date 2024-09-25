@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ImageBackground, ScrollView, StyleSheet, Text, View, Alert, Linking } from "react-native";
+import { ImageBackground, ScrollView, StyleSheet, Text, View, Linking } from "react-native";
 import {
   Button,
   XStack,
@@ -19,7 +19,7 @@ import { router, useFocusEffect } from "expo-router";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context } from "@/constants/Context";
-import * as Permissions from "expo-permissions";
+import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import * as React from "react";
 import {MaterialIcons} from "@expo/vector-icons";
 
@@ -31,8 +31,9 @@ export default function RecordScreen() {
   const bgImage = require('@/assets/images/bg4.png');
   const scrollViewRef = useRef<ScrollView>(null);
   const [recording, setRecording] = useState<boolean>(false);
-  const [conversation, setConversation] = useState<conversationTypes[]>([]);
   const [microphonePermission, setMicrophonePermission] = useState<boolean>(false);
+  const [speechPermission, setSpeechPermission] = useState<boolean>(false);
+  const [conversation, setConversation] = useState<conversationTypes[]>([]);
   const [openHelp, setOpenHelp] = useState<boolean>(false);
 
   const [error, setError] = useState<string>('');
@@ -51,7 +52,7 @@ export default function RecordScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      startLearning().then()
+      checkPermission().then();
       return () => {
         stopLearning().then()
       };
@@ -59,7 +60,6 @@ export default function RecordScreen() {
   );
 
   useEffect(() => {
-    checkPerMission().then();
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).then();
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
@@ -72,28 +72,36 @@ export default function RecordScreen() {
     };
   }, []);
 
-  async function checkPerMission() {
-    const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-    if (status === 'granted') {
-      setMicrophonePermission(true);
+  async function checkPermission() {
+    // const voiceAvailable = await Voice.isAvailable();
+    const microphoneStatus = await check(PERMISSIONS.IOS.MICROPHONE);
+    const speechStatus = await check(PERMISSIONS.IOS.SPEECH_RECOGNITION);
+
+    if (microphoneStatus !== RESULTS.GRANTED) {
+      const status = await request(PERMISSIONS.IOS.MICROPHONE);
+      setMicrophonePermission(status === RESULTS.GRANTED);
     } else {
-      setMicrophonePermission(false);
-      // Alert.alert(
-      //   'Quyền truy cập micro bị từ chối',
-      //   'Ứng dụng cần truy cập micro để nhận diện giọng nói. Hãy vào cài đặt để cấp quyền.',
-      //   [
-      //     { text: 'Hủy', style: 'cancel' },
-      //     { text: 'Đi đến cài đặt', onPress: () => Linking.openSettings() }
-      //   ]
-      // );
+      setMicrophonePermission(true)
     }
 
-    const voiceAvailable = await Voice.isAvailable();
+    if (speechStatus !== RESULTS.GRANTED) {
+      const status = await request(PERMISSIONS.IOS.SPEECH_RECOGNITION);
+      setSpeechPermission(status === RESULTS.GRANTED);
+    } else {
+      setSpeechPermission(true)
+    }
+
+    if (microphonePermission && speechPermission) {
+      setOpenHelp(false)
+      startLearning().then();
+    } else {
+      setOpenHelp(true);
+    }
   }
 
   async function startLearning() {
     const context: string = await AsyncStorage.getItem('context') || '';
-    let content = '';
+    let content;
     switch (context) {
       case 'classroom':
         content = Context.classroom.content;
@@ -134,7 +142,7 @@ export default function RecordScreen() {
 
   async function startRecording() {
     setStatus('start recording');
-    setHelpMessage('Nhấn lần nữa để dừng')
+    setHelpMessage('Nhấn lần nữa để dừng');
     setRecording(true);
     resetState();
     try {
@@ -348,6 +356,7 @@ export default function RecordScreen() {
           )
         }
         <QuitConfirmModal />
+        <HelpDialog />
         <View style={styles.help}>
           <XStack justifyContent="space-between">
             <Button
