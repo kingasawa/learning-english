@@ -33,6 +33,7 @@ export default function RecordScreen() {
   const [recording, setRecording] = useState<boolean>(false);
   const [microphonePermission, setMicrophonePermission] = useState<boolean>(false);
   const [speechPermission, setSpeechPermission] = useState<boolean>(false);
+  const [permission, setPermission] = useState<boolean>(false);
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
   const [openHelp, setOpenHelp] = useState<boolean>(false);
 
@@ -53,6 +54,7 @@ export default function RecordScreen() {
   useFocusEffect(
     useCallback(() => {
       checkPermission().then();
+      startLearning().then();
       return () => {
         stopLearning().then()
       };
@@ -76,27 +78,9 @@ export default function RecordScreen() {
     // const voiceAvailable = await Voice.isAvailable();
     const microphoneStatus = await check(PERMISSIONS.IOS.MICROPHONE);
     const speechStatus = await check(PERMISSIONS.IOS.SPEECH_RECOGNITION);
-
-    if (microphoneStatus !== RESULTS.GRANTED) {
-      const status = await request(PERMISSIONS.IOS.MICROPHONE);
-      setMicrophonePermission(status === RESULTS.GRANTED);
-    } else {
-      setMicrophonePermission(true)
-    }
-
-    if (speechStatus !== RESULTS.GRANTED) {
-      const status = await request(PERMISSIONS.IOS.SPEECH_RECOGNITION);
-      setSpeechPermission(status === RESULTS.GRANTED);
-    } else {
-      setSpeechPermission(true)
-    }
-
-    if (microphonePermission && speechPermission) {
-      setOpenHelp(false)
-      startLearning().then();
-    } else {
-      setOpenHelp(true);
-    }
+    setMicrophonePermission(microphoneStatus === RESULTS.GRANTED)
+    setSpeechPermission(speechStatus === RESULTS.GRANTED)
+    setPermission(microphonePermission && speechPermission);
   }
 
   async function startLearning() {
@@ -186,9 +170,15 @@ export default function RecordScreen() {
     setStatus('speech end')
   };
 
-  const onSpeechError = (e: SpeechErrorEvent) => {
+  const onSpeechError = async(e: SpeechErrorEvent) => {
+    await Voice.stop();
+    setRecording(false);
     if (e.error?.code !== 'recognition_fail') {
-      setStatus('speech error')
+      setStatus('recognition_fail')
+      setError(JSON.stringify(e.error));
+    } else {
+      setOpenHelp(true);
+      setStatus(e.error?.code || '')
       setError(JSON.stringify(e.error));
     }
   };
@@ -253,32 +243,52 @@ export default function RecordScreen() {
               <AlertDialog.Description>
                 <Text style={{ color: '#ccc' }}>Để sử dụng vui lòng bật Microphone và Speech Recognition</Text>
               </AlertDialog.Description>
-              <YStack gap="$4">
-                <YStack>
-                  <Text style={{ color: 'white' }}>Vào Setting - Search - Microphone</Text>
-                  <XStack gap="$4" alignItems="center">
-                    <Text style={{ color: 'white' }}>
-                      Bot Talk
-                    </Text>
-                    <MaterialIcons name="toggle-on" color="green" size={40}/>
-                  </XStack>
-                </YStack>
-                <YStack>
-                  <Text style={{ color: 'white' }}>Vào Setting - Search - Speech Recognition</Text>
-                  <XStack gap="$4" alignItems="center">
-                    <Text style={{ color: 'white' }}>
-                      Bot Talk
-                    </Text>
-                    <MaterialIcons name="toggle-on" color="green" size={40}/>
-                  </XStack>
-                </YStack>
+              <YStack>
+                <XStack gap="$4" alignItems="center">
+                  <Button
+                    paddingHorizontal={5}
+                    marginBottom={15}
+                    size="$1"
+                    backgroundColor="$yellow"
+                    onPress={() => Linking.openSettings()}
+                    icon={<MaterialIcons name="settings" size={10} />}
+                  >
+                    <Text style={{ fontSize: 8, color: 'white' }}>Cài đặt</Text>
+                  </Button>
+                </XStack>
+                <XStack gap="$4" alignItems="center">
+                  <Button
+                    size="$1"
+                    circular
+                    backgroundColor="$yellow"
+                    icon={<MaterialIcons name="mic" size={15} />}
+                  />
+                  <Text style={{ color: 'white', width: 145 }}>Microphone</Text>
+                  <MaterialIcons name="toggle-on" color="green" size={40}/>
+                </XStack>
+                <XStack gap="$4" alignItems="center">
+                  <Button
+                    size="$1"
+                    circular
+                    backgroundColor="gray"
+                    icon={<MaterialIcons name="graphic-eq" size={15} />}
+                  />
+                  <Text style={{ color: 'white', width: 145 }}>Speech Recognition</Text>
+                  <MaterialIcons name="toggle-on" color="green" size={40}/>
+                </XStack>
               </YStack>
               <XStack gap="$3" justifyContent="flex-end">
                 <AlertDialog.Cancel asChild>
-                  <Button backgroundColor="$yellow" onPress={() => setOpenHelp(false)}>Đã hiểu</Button>
+                  <Button backgroundColor="gray" onPress={() => setOpenHelp(false)}>Đã hiểu</Button>
                 </AlertDialog.Cancel>
                 <AlertDialog.Action>
-                  <Button backgroundColor="$yellow" onPress={() => Linking.openSettings()}>Setting</Button>
+                  <Button
+                    backgroundColor="$yellow"
+                    onPress={() => Linking.openSettings()}
+                    icon={<MaterialIcons name="settings" size={20} />}
+                  >
+                    Cài đặt
+                  </Button>
                 </AlertDialog.Action>
               </XStack>
             </YStack>

@@ -3,103 +3,13 @@ import {View, StyleSheet, Text, ImageBackground, ScrollView, Linking } from "rea
 import { H3, XStack, YStack, Button, AlertDialog } from "tamagui";
 import LessonCard from "@/components/LessonCard";
 import { AIConfigModal } from "@/components/AIConfigModal";
-import { MaterialIcons } from "@expo/vector-icons";
+// import { MaterialIcons } from "@expo/vector-icons";
 import {useRef, useState} from "react";
 
 export default function App() {
   const bgImage = require('@/assets/images/bg4.png');
   const scrollViewRef = useRef<ScrollView>(null);
-  const [openHelp, setOpenHelp] = useState<boolean>(false);
-
-  const HelpDialog = () => {
-    return (
-      <AlertDialog open={openHelp}>
-        <AlertDialog.Portal>
-          <AlertDialog.Overlay
-            key="overlay"
-            animation="quick"
-            opacity={1}
-            enterStyle={{ opacity: 0 }}
-            exitStyle={{ opacity: 0 }}
-          />
-          <AlertDialog.Content
-            backgroundColor="rgba(0,0,0,0.70)"
-            elevate
-            key="content"
-            animation={[
-              'quick',
-              {
-                opacity: {
-                  overshootClamping: true,
-                },
-              },
-            ]}
-            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
-            x={0}
-            scale={1}
-            opacity={1}
-            y={0}
-          >
-            <YStack gap="$4">
-              <AlertDialog.Title color="$yellow">Hướng dẫn</AlertDialog.Title>
-              <AlertDialog.Description>
-                <Text style={{ color: '#ccc' }}>Để sử dụng vui lòng bật Microphone và Speech Recognition</Text>
-              </AlertDialog.Description>
-              <YStack>
-                <XStack gap="$4" alignItems="center">
-                  <Button
-                    paddingHorizontal={5}
-                    marginBottom={15}
-                    size="$1"
-                    backgroundColor="$yellow"
-                    onPress={() => Linking.openSettings()}
-                    icon={<MaterialIcons name="settings" size={10} />}
-                  >
-                    <Text style={{ fontSize: 8, color: 'white' }}>Cài đặt</Text>
-                  </Button>
-                </XStack>
-                <XStack gap="$4" alignItems="center">
-                  <Button
-                    size="$1"
-                    circular
-                    backgroundColor="$yellow"
-                    icon={<MaterialIcons name="mic" size={15} />}
-                  />
-                  <Text style={{ color: 'white', width: 145 }}>Microphone</Text>
-                  <MaterialIcons name="toggle-on" color="green" size={40}/>
-                </XStack>
-                <XStack gap="$4" alignItems="center">
-                  <Button
-                    size="$1"
-                    circular
-                    backgroundColor="gray"
-                    icon={<MaterialIcons name="graphic-eq" size={15} />}
-                  />
-                  <Text style={{ color: 'white', width: 145 }}>Speech Recognition</Text>
-                  <MaterialIcons name="toggle-on" color="green" size={40}/>
-                </XStack>
-              </YStack>
-              <XStack gap="$3" justifyContent="flex-end">
-                <AlertDialog.Cancel asChild>
-                  <Button backgroundColor="gray" onPress={() => setOpenHelp(false)}>Đã hiểu</Button>
-                </AlertDialog.Cancel>
-                <AlertDialog.Action>
-                  <Button
-                    backgroundColor="$yellow"
-                    onPress={() => Linking.openSettings()}
-                    icon={<MaterialIcons name="settings" size={20} />}
-                  >
-                    Cài đặt
-                  </Button>
-                </AlertDialog.Action>
-              </XStack>
-            </YStack>
-          </AlertDialog.Content>
-        </AlertDialog.Portal>
-      </AlertDialog>
-    )
-  }
+  // const [openHelp, setOpenHelp] = useState<boolean>(false);
 
   return (
       <ImageBackground
@@ -107,16 +17,15 @@ export default function App() {
         style={styles.imageBackground}
       >
         <View style={styles.container}>
-          <HelpDialog />
-          <XStack justifyContent="flex-end" alignItems="center" style={styles.header} >
-            <Button
-              size="$2"
-              icon={<MaterialIcons name="info" size={18} />}
-              onPress={() => setOpenHelp(true)}
-            >
-              <Text style={{ color: 'white', fontSize: 12 }}>HƯỚNG DẪN</Text>
-            </Button>
-          </XStack>
+          {/*<XStack justifyContent="flex-end" alignItems="center" style={styles.header} >*/}
+          {/*  <Button*/}
+          {/*    size="$2"*/}
+          {/*    icon={<MaterialIcons name="info" size={18} />}*/}
+          {/*    onPress={() => setOpenHelp(true)}*/}
+          {/*  >*/}
+          {/*    <Text style={{ color: 'white', fontSize: 12 }}>HƯỚNG DẪN</Text>*/}
+          {/*  </Button>*/}
+          {/*</XStack>*/}
           <ScrollView
             style={styles.scrollView}
             onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
