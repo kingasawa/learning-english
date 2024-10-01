@@ -4,7 +4,7 @@ import {
   Button,
   XStack,
   Avatar,
-  YStack, AlertDialog,
+  YStack, AlertDialog, Sheet, Form, Label, Input, TextArea, Spinner,
 } from "tamagui";
 import Voice, {
   SpeechRecognizedEvent,
@@ -19,42 +19,59 @@ import { router, useFocusEffect } from "expo-router";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context } from "@/constants/Context";
-import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import * as React from "react";
-import {MaterialIcons} from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import PrivacyModal from "@/components/PrivacyModal";
 
 export default function RecordScreen() {
   interface conversationTypes {
     role: string,
     content: string
   }
-  const bgImage = require('@/assets/images/bg4.png');
+  interface speechOptionsTypes {
+    language: string,
+    pitch?: number,
+    rate?: number,
+    voice?: string
+  }
+  const [permissionResponse] = Audio.usePermissions();
+  const bgImage = require("@/assets/images/bg4.png");
   const scrollViewRef = useRef<ScrollView>(null);
   const [recording, setRecording] = useState<boolean>(false);
-  const [microphonePermission, setMicrophonePermission] = useState<boolean>(false);
   const [speechPermission, setSpeechPermission] = useState<boolean>(false);
-  const [permission, setPermission] = useState<boolean>(false);
   const [conversation, setConversation] = useState<conversationTypes[]>([]);
   const [openHelp, setOpenHelp] = useState<boolean>(false);
 
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-  const [textMessage, setTextMessage] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [helpMessage, setHelpMessage] = useState<string>('Nhấn vào Mic để nói');
+  const [textMessage, setTextMessage] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [helpMessage, setHelpMessage] = useState<string>("Nhấn vào Mic để nói");
+
+  const spModes = ['percent', 'constant', 'fit', 'mixed'] as const;
+  const [position, setPosition] = useState(0);
+  const [openSupport, setOpenSupport] = useState(false);
+  const [modal, setModal] = useState(true);
+  const [snapPointsMode, setSnapPointsMode] =
+    useState<(typeof spModes)[number]>('percent');
 
   function botSpeak (text: string){
-    Speech.speak(text, {
-      language: 'en-US',
+    const speechOptions: speechOptionsTypes = {
+      language: "en-US",
       pitch: 1,
-      rate: 0.8
-    });
+      rate: 0.8,
+    }
+    Speech.speak(text, speechOptions);
   }
 
   useFocusEffect(
     useCallback(() => {
-      checkPermission().then();
-      startLearning().then();
+      const init = async() => {
+        const voiceAvailable = await Voice.isAvailable();
+        setSpeechPermission(voiceAvailable === 1);
+        startLearning().then();
+      };
+      init().then();
       return () => {
         stopLearning().then()
       };
@@ -62,26 +79,15 @@ export default function RecordScreen() {
   );
 
   useEffect(() => {
-    Audio.setAudioModeAsync({ playsInSilentModeIOS: true }).then();
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechEnd = onSpeechEnd;
     Voice.onSpeechError = onSpeechError;
     Voice.onSpeechResults = onSpeechResults;
-
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
-
-  async function checkPermission() {
-    // const voiceAvailable = await Voice.isAvailable();
-    const microphoneStatus = await check(PERMISSIONS.IOS.MICROPHONE);
-    const speechStatus = await check(PERMISSIONS.IOS.SPEECH_RECOGNITION);
-    setMicrophonePermission(microphoneStatus === RESULTS.GRANTED)
-    setSpeechPermission(speechStatus === RESULTS.GRANTED)
-    setPermission(microphonePermission && speechPermission);
-  }
 
   async function startLearning() {
     const context: string = await AsyncStorage.getItem('context') || '';
@@ -125,15 +131,19 @@ export default function RecordScreen() {
   }
 
   async function startRecording() {
-    setStatus('start recording');
-    setHelpMessage('Nhấn lần nữa để dừng');
-    setRecording(true);
-    resetState();
-    try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      await Voice.start('en-US');
-    } catch (e) {
-      console.error(e);
+    if (permissionResponse?.status === 'granted') {
+      setStatus('start recording');
+      setHelpMessage('Nhấn lần nữa để dừng');
+      setRecording(true);
+      resetState();
+      try {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        await Voice.start('en-US');
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setOpenHelp(true)
     }
   }
 
@@ -173,13 +183,16 @@ export default function RecordScreen() {
   const onSpeechError = async(e: SpeechErrorEvent) => {
     await Voice.stop();
     setRecording(false);
-    if (e.error?.code !== 'recognition_fail') {
-      setStatus('recognition_fail')
-      setError(JSON.stringify(e.error));
-    } else {
-      setOpenHelp(true);
-      setStatus(e.error?.code || '')
-      setError(JSON.stringify(e.error));
+    switch (e.error?.message) {
+      case 'User denied access to speech recognition':
+        setOpenHelp(true);
+        break;
+      case '1110/No speech detected':
+        break;
+      default:
+        setStatus(e.error?.code || '')
+        setError(JSON.stringify(e.error));
+        break;
     }
   };
 
@@ -205,9 +218,42 @@ export default function RecordScreen() {
   };
 
   const handleQuit = async() => {
-    router.replace('/')
+    router.replace('/learn')
   }
 
+  const SupportModal = () => {
+    return (
+      <Sheet
+        forceRemoveScrollEnabled={openSupport}
+        modal={modal}
+        open={openSupport}
+        onOpenChange={setOpenSupport}
+        snapPoints={[95]}
+        snapPointsMode={snapPointsMode}
+        dismissOnSnapToBottom
+        position={position}
+        onPositionChange={setPosition}
+        zIndex={100_000}
+        animation="medium"
+      >
+        <Sheet.Overlay
+          animation="lazy"
+          enterStyle={{ opacity: 0 }}
+          exitStyle={{ opacity: 0 }}
+        />
+
+        <Sheet.Handle alignSelf="center" style={{ backgroundColor: '#FFC45CFF', borderWidth: 1, top: 30, width: 50 }} />
+        <Sheet.Frame
+          style={{backgroundColor: 'rgba(24,24,24,0.8)'}}
+          paddingTop={15}
+          alignItems="center"
+          gap="$1"
+        >
+          <PrivacyModal />
+        </Sheet.Frame>
+      </Sheet>
+    )
+  }
   const HelpDialog = () => {
     return (
       <AlertDialog open={openHelp}>
@@ -256,26 +302,32 @@ export default function RecordScreen() {
                     <Text style={{ fontSize: 8, color: 'white' }}>Cài đặt</Text>
                   </Button>
                 </XStack>
-                <XStack gap="$4" alignItems="center">
-                  <Button
-                    size="$1"
-                    circular
-                    backgroundColor="$yellow"
-                    icon={<MaterialIcons name="mic" size={15} />}
-                  />
-                  <Text style={{ color: 'white', width: 145 }}>Microphone</Text>
-                  <MaterialIcons name="toggle-on" color="green" size={40}/>
-                </XStack>
-                <XStack gap="$4" alignItems="center">
-                  <Button
-                    size="$1"
-                    circular
-                    backgroundColor="gray"
-                    icon={<MaterialIcons name="graphic-eq" size={15} />}
-                  />
-                  <Text style={{ color: 'white', width: 145 }}>Speech Recognition</Text>
-                  <MaterialIcons name="toggle-on" color="green" size={40}/>
-                </XStack>
+                {
+                  permissionResponse?.status !== 'granted' && (
+                    <XStack gap="$4" alignItems="center">
+                      <Button
+                        size="$1"
+                        circular
+                        backgroundColor="$yellow"
+                        icon={<MaterialIcons name="mic" size={15} />}
+                      />
+                      <Text style={{ color: 'white', width: 145 }}>Microphone</Text>
+                      <MaterialIcons name="toggle-on" color="green" size={40}/>
+                    </XStack>
+                  )}
+                {
+                  !speechPermission && (
+                    <XStack gap="$4" alignItems="center">
+                      <Button
+                        size="$1"
+                        circular
+                        backgroundColor="gray"
+                        icon={<MaterialIcons name="graphic-eq" size={15} />}
+                      />
+                      <Text style={{ color: 'white', width: 145 }}>Speech Recognition</Text>
+                      <MaterialIcons name="toggle-on" color="green" size={40}/>
+                    </XStack>
+                  )}
               </YStack>
               <XStack gap="$3" justifyContent="flex-end">
                 <AlertDialog.Cancel asChild>
@@ -366,6 +418,7 @@ export default function RecordScreen() {
           )
         }
         <QuitConfirmModal />
+        <SupportModal />
         <HelpDialog />
         <View style={styles.help}>
           <XStack justifyContent="space-between">
@@ -383,8 +436,8 @@ export default function RecordScreen() {
               circular
               backgroundColor="transparent"
               borderWidth={0}
-              icon={<Info size="$1" color="$yellow"/>}
-              onPress={() => console.log('info')}
+              icon={<Info size="$1" color="$primary"/>}
+              onPress={() => setOpenSupport(true)}
             />
           </XStack>
         </View>

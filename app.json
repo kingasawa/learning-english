@@ -44,8 +44,8 @@
       [
         "@react-native-voice/voice",
         {
-          "microphonePermission": "CUSTOM: Allow $(PRODUCT_NAME) to access the microphone",
-          "speechRecognitionPermission": "CUSTOM: Allow $(PRODUCT_NAME) to securely recognize user speech"
+          "microphonePermission": "Quyền truy cập này để cung cấp các tính năng tương tác bằng giọng nói với AI.",
+          "speechRecognitionPermission": "Ứng dụng muốn sử dụng tính năng này để nhận diện âm thanh bạn nói ra tương tác với AI."
         }
       ],
       [
@@ -63,7 +63,7 @@
       [
         "expo-av",
         {
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+          "microphonePermission": "Quyền truy cập này để cung cấp các tính năng tương tác bằng giọng nói với AI."
         }
       ]
     ],
@@ -75,9 +75,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "dad2640f-cf0f-4607-b8c4-16f85aa4daa7"
+        "projectId": "9e16c74d-0f78-4566-8b39-aa0088768b3b"
       }
     },
-    "owner": "khanhtrancat"
+    "owner": "khanhtran2804"
   }
 }

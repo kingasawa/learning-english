@@ -1,28 +1,45 @@
 import * as React from 'react';
-import { View, StyleSheet, Text, ImageBackground, ScrollView } from "react-native";
-import { H3, YStack } from "tamagui";
+import { View, StyleSheet, Text, ImageBackground, ScrollView, Platform } from "react-native";
+import { H3, YStack  } from "tamagui";
 import LessonCard from "@/components/LessonCard";
 import { AIConfigModal } from "@/components/AIConfigModal";
-import {useEffect, useRef} from "react";
-// import {Audio} from "expo-av";
-// import Voice from "@react-native-voice/voice";
+import { useEffect, useRef } from "react";
+import { Audio } from "expo-av";
+const soundObject = new Audio.Sound();
+// import * as Speech from "expo-speech";
 
 export default function App() {
+  const [permissionResponse, requestPermission] = Audio.usePermissions()
   const bgImage = require('@/assets/images/bg4.png');
   const scrollViewRef = useRef<ScrollView>(null);
-  // const [permissionResponse, requestPermission] = Audio.usePermissions();
-  // useEffect(() => {
-  //   checkPermission().then();
-  //   console.log('permissionResponse?.status', permissionResponse?.status);
-  //   console.log('bbb');
-  // }, []);
-  //
-  // async function checkPermission() {
-  //   if (permissionResponse?.status !== 'granted') {
-  //     await requestPermission();
-  //   } else {
-  //     console.log('permissionResponse?.status', permissionResponse?.status);
-  //   }
+
+  useEffect(() => {
+    const enableSound = async () => {
+      if (permissionResponse?.status !== "granted") {
+        await requestPermission();
+      }
+      if (Platform.OS === "ios") {
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+        });
+        await soundObject.loadAsync(require("@/assets/sounds/soundFile.mp3"));
+        await soundObject.playAsync();
+      }
+    };
+    enableSound().then();
+  });
+// com.apple.speech.synthesis.voice.Princess
+//   com.apple.ttsbundle.siri_Aaron_en-US_compact
+
+  // async function botSpeak (text: string){
+  //   const voice = await Speech.getAvailableVoicesAsync();
+  //   console.log('voice', voice);
+  //   Speech.speak(text, {
+  //     language: 'en-US',
+  //     // pitch: 1,
+  //     // rate: 0.8,
+  //     voice: 'com.apple.eloquence.en-GB.Flo'
+  //   });
   // }
 
   return (
@@ -31,6 +48,14 @@ export default function App() {
         style={styles.imageBackground}
       >
         <View style={styles.container}>
+          {/*<XStack justifyContent="flex-end" alignItems="center" style={styles.header} >*/}
+          {/*  <Button*/}
+          {/*    size="$2"*/}
+          {/*    onPress={() => botSpeak('Hi, are you new here?')}*/}
+          {/*  >*/}
+          {/*    <Text style={{ color: 'white', fontSize: 12 }}>HƯỚNG DẪN</Text>*/}
+          {/*  </Button>*/}
+          {/*</XStack>*/}
           <ScrollView
             style={styles.scrollView}
             onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
@@ -73,6 +98,9 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingTop: 60,
     justifyContent: 'flex-start'
+  },
+  header: {
+
   },
   imageBackground: {
     flex: 1,

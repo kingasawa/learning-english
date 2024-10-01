@@ -4,13 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7da91f32-ff40-4ac3-ad06-54225fb6e2ce" name="Changes" comment="test release">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="7da91f32-ff40-4ac3-ad06-54225fb6e2ce" name="Changes" comment="upgrade ui">
+      <change afterPath="$PROJECT_DIR$/app/learn.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/privacy.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/sounds/soundFile.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/PrivacyModal.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/codestream.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codestream.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/apiService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/apiService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socket.js" beforeDir="false" afterPath="$PROJECT_DIR$/socket.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/record.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/record.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/AIConfigModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/AIConfigModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/LessonCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/LessonCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eas.json" beforeDir="false" afterPath="$PROJECT_DIR$/eas.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,28 +46,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;com.google.cloudcode.ide_session_index&quot;: &quot;20240823_0000&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/kingasawa/Projects/learning-english/assets/images&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/kingasawa/Projects/learning-english/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.google.cloudcode.ide_session_index": "20240823_0000",
+    "git-widget-placeholder": "feature/for-app-review",
+    "last_opened_file_path": "/Users/kingasawa/Projects/learning-english/app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Language Defaults",
+    "ts.external.directory.path": "/Users/kingasawa/Projects/learning-english/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/components" />
+      <recent name="$PROJECT_DIR$/assets/sounds" />
       <recent name="$PROJECT_DIR$/assets/images" />
       <recent name="$PROJECT_DIR$/app/(auth)" />
-      <recent name="$PROJECT_DIR$/app" />
-      <recent name="$PROJECT_DIR$/app/(tabs)" />
-      <recent name="D:\PROJECTS\my-app\app\(tabs)" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/notuse" />
@@ -88,6 +99,10 @@
       <workItem from="1725759274509" duration="21450000" />
       <workItem from="1725781989946" duration="3159000" />
       <workItem from="1725980491973" duration="842000" />
+      <workItem from="1727512088955" duration="4442000" />
+      <workItem from="1727536224252" duration="3491000" />
+      <workItem from="1727572119747" duration="12143000" />
+      <workItem from="1727704254821" duration="2242000" />
     </task>
     <task id="LOCAL-00001" summary="test release">
       <option name="closed" value="true" />

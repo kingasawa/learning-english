@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import { XStack, YStack, Image, H6, Button, H5 } from "tamagui";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 
@@ -53,7 +52,6 @@ export default function LessonCard(props: PropsType = {
             { props.description }
           </Text>
         </YStack>
-        <MaterialIcon name='verified' size={30} color="gray"/>
       </XStack>
     </View>
     </Pressable>

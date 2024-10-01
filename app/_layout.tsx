@@ -60,6 +60,7 @@ export default function RootLayout() {
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="learn" options={{ headerShown: false }} />
             <Stack.Screen name="record" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
             <Stack.Screen name="+not-found" options={{ headerShown: false }} />
           </Stack>
